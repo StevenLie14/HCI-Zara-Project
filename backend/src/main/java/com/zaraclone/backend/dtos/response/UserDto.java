@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class UserDto {
     private String id;
-    private String username;
+    private String name;
     private String email;
     private String password;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

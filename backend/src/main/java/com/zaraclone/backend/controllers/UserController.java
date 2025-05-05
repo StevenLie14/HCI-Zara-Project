@@ -10,6 +10,7 @@ import com.zaraclone.backend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<Iterable<UserDto>> getAllUsers() {
@@ -39,6 +41,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request) {
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        System.out.println(request);
         var user = userMapper.toEntity(request);
         user = userRepository.save(user);
         return ResponseEntity.ok(userMapper.toDto(user));
@@ -50,6 +54,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
+
         userMapper.update(request,user);
         return ResponseEntity.ok(userMapper.toDto(user));
     }

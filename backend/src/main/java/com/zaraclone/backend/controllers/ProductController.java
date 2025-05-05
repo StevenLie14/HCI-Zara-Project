@@ -5,6 +5,7 @@ import com.zaraclone.backend.dtos.response.ProductDto;
 import com.zaraclone.backend.entities.Product;
 import com.zaraclone.backend.mappers.ProductMapper;
 import com.zaraclone.backend.repositories.ProductRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductRepository productRepository;
@@ -20,7 +22,6 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Iterable<ProductDto>> getAllProducts(
-            @RequestHeader(name = "x-auth-token", required = false) String token,
             @RequestParam(name = "categoryId",required = false) String categoryId
     ) {
         List<Product> prods;

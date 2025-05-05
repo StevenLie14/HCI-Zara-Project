@@ -2,9 +2,9 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:6644}/${POSTGRES_DB:zara}
-    username: ${POSTGRES_USER:zara}
-    password: ${POSTGRES_PASSWORD:zara}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,6 +14,9 @@ spring:
     enabled: true
     locations: classpath:db/migration
     validate-on-migrate: true
+app:
+  jwt:
+    secret: Zm9vYmFyYmF6Y29vbG9uZ2Zvb2JhcmJhc2Nvb2xvbmdmb29iYXJjb29sb25nZm9vYmFyYmF6Y29vbG9uZ2Zv
 
 
 
