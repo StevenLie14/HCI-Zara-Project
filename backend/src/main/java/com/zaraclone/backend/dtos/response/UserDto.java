@@ -1,4 +1,4 @@
-package com.zaraclone.backend.dtos;
+package com.zaraclone.backend.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

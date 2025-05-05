@@ -1,9 +1,7 @@
-package com.zaraclone.backend.dtos;
+package com.zaraclone.backend.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.zaraclone.backend.entities.Category;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 import java.math.BigDecimal;
