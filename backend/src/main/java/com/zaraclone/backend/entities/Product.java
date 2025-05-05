@@ -23,7 +23,8 @@ public class Product {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
-    private Product category;
+    private Category category;
+
 }
