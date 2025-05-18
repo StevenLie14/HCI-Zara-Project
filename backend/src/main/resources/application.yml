@@ -25,7 +25,4 @@ minio:
     name: zara
 app:
   jwt:
-    secret: Zm9vYmFyYmF6Y29vbG9uZ2Zvb2JhcmJhc2Nvb2xvbmdmb29iYXJjb29sb25nZm9vYmFyYmF6Y29vbG9uZ2Zv
-
-
-
+    secret: ${JWT_SECRET_KEY}

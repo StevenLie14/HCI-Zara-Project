@@ -6,8 +6,8 @@ services:
       - "6644:6644"
     env_file:
       - backend/.env
-#    networks:
-#      - zara
+    networks:
+      - zara
     volumes:
       - db_data:/var/lib/postgresql/data
     command:  ["postgres", "-p", "6644"]
@@ -18,15 +18,28 @@ services:
       - "9091:9091"
     volumes:
       - minio-data:/data
-#    networks:
-#      - zara
+    networks:
+      - zara
     env_file:
       - backend/.env
     command: server /data --console-address ":9091"
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    env_file:
+      - backend/.env
+    ports:
+      - "6789:6789"
+    networks:
+      - zara
+    depends_on:
+      - minio
+      - zara-db
 
 volumes:
   db_data:
   minio-data:
 
-#networks:
-#  zara:
+networks:
+  zara:
