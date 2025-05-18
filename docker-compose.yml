@@ -6,9 +6,27 @@ services:
       - "6644:6644"
     env_file:
       - backend/.env
+#    networks:
+#      - zara
     volumes:
       - db_data:/var/lib/postgresql/data
     command:  ["postgres", "-p", "6644"]
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      - "9000:9000"
+      - "9091:9091"
+    volumes:
+      - minio-data:/data
+#    networks:
+#      - zara
+    env_file:
+      - backend/.env
+    command: server /data --console-address ":9091"
 
 volumes:
   db_data:
+  minio-data:
+
+#networks:
+#  zara:
