@@ -12,8 +12,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class MinioService {
 
-    @Autowired
-    private MinioClient minioClient;
+    private final MinioClient minioClient;
     @Value("${minio.bucket.name}")
     private String bucketName;
 

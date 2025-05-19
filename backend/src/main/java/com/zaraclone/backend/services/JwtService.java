@@ -1,4 +1,4 @@
-package com.zaraclone.backend.config;
+package com.zaraclone.backend.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

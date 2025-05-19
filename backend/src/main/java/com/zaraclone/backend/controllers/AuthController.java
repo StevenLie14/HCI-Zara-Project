@@ -1,14 +1,17 @@
 package com.zaraclone.backend.controllers;
 
-import com.zaraclone.backend.config.JwtService;
 import com.zaraclone.backend.dtos.request.LoginRequest;
 import com.zaraclone.backend.dtos.response.AuthDto;
-import com.zaraclone.backend.repositories.UserRepository;
+import com.zaraclone.backend.services.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.SameSiteCookies;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,25 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserRepository userRepository;
+    @Value("${app.cookie.name}")
+    private String cookieName;
 
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-
+    @Value("${app.cookie.expires-in}")
+    private int expiresIn;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthDto> login(
-            LoginRequest request
+            @RequestBody LoginRequest request,
+            HttpServletResponse response
     ) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return ResponseEntity.ok(new AuthDto(jwtToken));
+        var resp = authService.login(request);
+        ResponseCookie cookie = ResponseCookie.from(cookieName, resp.getToken())
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(expiresIn)
+                .sameSite(SameSiteCookies.NONE.toString())
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok(resp);
+
     }
 
 }

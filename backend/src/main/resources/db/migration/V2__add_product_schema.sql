@@ -13,7 +13,7 @@ create table products (
     category_id varchar(36) not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    constraint fk_category foreign key (category_id) references categories(id)
+    foreign key (category_id) references categories(id)
 );
 
 
