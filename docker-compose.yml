@@ -36,10 +36,41 @@ services:
     depends_on:
       - minio
       - zara-db
+  frontend-dev:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+      args:
+        - VITE_GENERATE_SOURCEMAP=${VITE_GENERATE_SOURCEMAP}
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - frontend/.env
+    networks:
+      - zara
+  frontend-prod:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_GENERATE_SOURCEMAP=${VITE_GENERATE_SOURCEMAP}
+    ports:
+      - "3000:80"
+    env_file:
+      - frontend/.env
+    networks:
+      - zara
 
 volumes:
   db_data:
   minio-data:
+  node_modules:
 
 networks:
   zara:
