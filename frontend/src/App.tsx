@@ -1,13 +1,13 @@
-import {getProjectEnvVariables} from "src/utils/env.ts";
+import {RouterProvider} from "react-router-dom";
+import {routes} from "src/router/routes.tsx";
 
 function App() {
 
 
   return (
-    <h1 className="text-xl font-bold underline">
-      {getProjectEnvVariables().envVariables.VITE_APPLICATION_NAME}
-      Hello world!
-    </h1>
+    <>
+      <RouterProvider router={routes} />
+    </>
   )
 }
 
