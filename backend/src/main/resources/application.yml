@@ -26,6 +26,17 @@ minio:
 app:
   jwt:
     secret: ${JWT_SECRET_KEY}
+    expires-in: 36000
   cookie:
     name: authToken
     expires-in: 900
+logging:
+  level:
+    org:
+      springframework:
+        security:
+            web:
+                filter:
+                security:
+                    AuthenticationFilter: DEBUG
+                    FilterChainProxy: DEBUG

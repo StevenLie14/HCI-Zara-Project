@@ -1,14 +1,11 @@
 package com.zaraclone.backend.controllers;
 
 
-import com.zaraclone.backend.dtos.request.RegisterUserRequest;
 import com.zaraclone.backend.dtos.response.ProductDto;
-import com.zaraclone.backend.dtos.response.UserDto;
 import com.zaraclone.backend.entities.Product;
 import com.zaraclone.backend.mappers.ProductMapper;
 import com.zaraclone.backend.repositories.ProductRepository;
 import com.zaraclone.backend.services.MinioService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +17,6 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductRepository productRepository;

@@ -7,6 +7,9 @@ export class AuthService extends BaseService {
   private static url = "/api/v1/auth"
   public static login = async (request : AuthRequest) => {
     const response: AxiosResponse<AuthResponse> = await AuthService.axios().post(AuthService.url+"/login",request)
+    if (response.data.token) {
+      localStorage.setItem("accessToken", response.data.token);
+    }
     return response.data
   }
 

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,19 +27,28 @@ public class AuthController {
     @Value("${app.cookie.expires-in}")
     private int expiresIn;
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity<AuthDto> login(
             @RequestBody LoginRequest request,
             HttpServletResponse response
     ) {
+        var authObject = new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+        );
+        authenticationManager.authenticate(
+                authObject
+        );
         var resp = authService.login(request);
+
         ResponseCookie cookie = ResponseCookie.from(cookieName, resp.getToken())
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
                 .maxAge(expiresIn)
-                .sameSite(SameSiteCookies.NONE.toString())
+                .sameSite(SameSiteCookies.LAX.toString())
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
