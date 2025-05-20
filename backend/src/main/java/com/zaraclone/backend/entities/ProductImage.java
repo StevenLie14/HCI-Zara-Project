@@ -22,7 +22,7 @@ public class ProductImage {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "product_id")
+//    private Product product;
 }

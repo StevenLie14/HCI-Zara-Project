@@ -43,4 +43,45 @@ public class ProductService {
         return productMapper.toDto(productRepository.save(product));
 
     }
+
+    public List<ProductDto> getAllProducts(String categoryId) {
+        if (categoryId != null) {
+            return productRepository.findByCategoryId(categoryId).stream()
+                    .map(productMapper::toDto)
+                    .toList();
+        } else {
+            return productRepository.findAllWithCategory().stream()
+                    .map(productMapper::toDto)
+                    .toList();
+        }
+    }
+
+    public ProductDto getProductById(String id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDto)
+                .orElse(null);
+    }
+
+    public boolean deleteProductById(String id) {
+        var product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            return false;
+        }
+
+        try {
+            productRepository.delete(product);
+            for (var image : product.getProductImages()) {
+                minioService.deleteFile(image.getProductImage());
+            }
+            for (var variant : product.getProductVariants()) {
+                minioService.deleteFile(variant.getVariantImage());
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting files: " + e.getMessage());
+//            throw new RuntimeException("Error deleting files", e);
+            return false;
+        }
+
+        return true;
+    }
 }

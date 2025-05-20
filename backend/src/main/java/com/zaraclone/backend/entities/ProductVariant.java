@@ -26,8 +26,8 @@ public class ProductVariant {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product_id")
+//    private Product product;
 
 }

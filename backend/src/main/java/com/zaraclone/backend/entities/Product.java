@@ -24,20 +24,16 @@ public class Product {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private List<ProductImage> productImages;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private List<ProductVariant> productVariants;
 
-    public void addImage(ProductImage image) {
-        productImages.add(image);
-        image.setProduct(this);
-    }
 }

@@ -7,6 +7,8 @@ import com.zaraclone.backend.dtos.request.UpdateUserRequest;
 import com.zaraclone.backend.dtos.response.UserDto;
 import com.zaraclone.backend.mappers.UserMapper;
 import com.zaraclone.backend.repositories.UserRepository;
+import com.zaraclone.backend.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<Iterable<UserDto>> getAllUsers() {
@@ -61,16 +64,16 @@ public class UserController {
 
     @PostMapping("/{id}/password")
     public ResponseEntity<Void> changePassword(@PathVariable String id, @RequestBody ChangePasswordRequest password) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
+        try {
+            userService.changePassword(id, password);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        if (!user.getPassword().equals(password.getOldPassword())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        user.setPassword(password.getNewPassword());
-        userRepository.save(user);
-        return ResponseEntity.noContent().build();
     }
 
 
