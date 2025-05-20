@@ -1,10 +1,13 @@
 package com.zaraclone.backend.services;
 
 import com.zaraclone.backend.dtos.request.LoginRequest;
+import com.zaraclone.backend.dtos.request.RegisterUserRequest;
 import com.zaraclone.backend.dtos.response.AuthDto;
+import com.zaraclone.backend.dtos.response.UserDto;
 import com.zaraclone.backend.mappers.UserMapper;
 import com.zaraclone.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtService jwtService;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -20,5 +24,12 @@ public class AuthService {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return new AuthDto(jwtToken,userMapper.toDto(user));
+    }
+
+    public UserDto register(RegisterUserRequest request) {
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        var user = userMapper.toEntity(request);
+        user = userRepository.save(user);
+        return userMapper.toDto(user);
     }
 }

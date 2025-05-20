@@ -1,5 +1,7 @@
 package com.zaraclone.backend.config;
 
+import com.zaraclone.backend.exceptions.CustomAccessDeniedHandler;
+import com.zaraclone.backend.exceptions.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +28,13 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private static final String[] WHITE_LIST_URL =
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private static final String[] AUTHORIZE_LIST_URL =
             {
-                    "/api/v1/auth/**",
-                    "swagger-ui/**",
-                    "/api/v1/users",
-                    "/v3/api-docs/**",
+                    "/api/v1/users/**",
+                    "/api/v1/products/**",
+
             };
 
     @Bean
@@ -54,9 +57,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers(AUTHORIZE_LIST_URL).authenticated()
                                 .anyRequest()
-                                .authenticated()
+                                .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

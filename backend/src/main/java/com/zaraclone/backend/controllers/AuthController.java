@@ -1,7 +1,9 @@
 package com.zaraclone.backend.controllers;
 
 import com.zaraclone.backend.dtos.request.LoginRequest;
+import com.zaraclone.backend.dtos.request.RegisterUserRequest;
 import com.zaraclone.backend.dtos.response.AuthDto;
+import com.zaraclone.backend.dtos.response.UserDto;
 import com.zaraclone.backend.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +56,11 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(resp);
-
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request) {
+        UserDto dto = authService.register(request);
+        return ResponseEntity.ok(dto);
+    }
 }

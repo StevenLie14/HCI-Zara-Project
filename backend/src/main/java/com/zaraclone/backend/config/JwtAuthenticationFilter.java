@@ -9,16 +9,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -29,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Value("${app.cookie.name}")
     private String cookieName;
@@ -55,26 +55,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+//        USING AUTHORIZATION HEADER
 //        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String email;
 //        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 //            filterChain.doFilter(request, response);
 //            return;
 //        }
 //        jwt = authHeader.substring(7);
+        final String jwt;
+        final String email;
+
         jwt = getTokenFromCookies(request);
         if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        System.out.println(jwt);
-
-
 
         try {
             email = jwtService.extractEmail(jwt);
-            System.out.println("Email: " + email);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (email != null && authentication == null) {
@@ -90,16 +88,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContext securityContext = SecurityContextHolder.getContext();
                     securityContext.setAuthentication(authToken);
-
-//                    HttpSession session = request.getSession(true);
-//                    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
                 }
             }
 
             filterChain.doFilter(request, response);
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+        } catch (UsernameNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: User not found");
+        } catch (AccessDeniedException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("Forbidden: Access denied");
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized: " + e.getMessage());
         }
 
     }

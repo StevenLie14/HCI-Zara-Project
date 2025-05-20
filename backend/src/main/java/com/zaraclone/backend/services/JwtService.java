@@ -20,6 +20,9 @@ public class JwtService {
     @Value("${app.jwt.secret}")
     private String secretKey;
 
+    @Value("${app.jwt.expires-in}")
+    private long expiration;
+
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -51,13 +54,13 @@ public class JwtService {
         return Jwts.builder().setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
 
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 }
