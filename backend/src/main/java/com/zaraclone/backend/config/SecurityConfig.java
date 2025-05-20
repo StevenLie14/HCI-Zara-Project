@@ -30,7 +30,8 @@ public class SecurityConfig {
             {
                     "/api/v1/auth/**",
                     "swagger-ui/**",
-                    "/api/v1/users"
+                    "/api/v1/users",
+                    "/v3/api-docs/**",
             };
 
     @Bean
@@ -40,7 +41,6 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION,HttpHeaders.CONTENT_TYPE));
         configuration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION));
-        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -58,7 +58,6 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

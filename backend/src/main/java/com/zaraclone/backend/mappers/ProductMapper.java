@@ -1,5 +1,6 @@
 package com.zaraclone.backend.mappers;
 
+import com.zaraclone.backend.dtos.request.CreateProductRequest;
 import com.zaraclone.backend.dtos.response.ProductDto;
 import com.zaraclone.backend.entities.Product;
 import org.mapstruct.Mapper;
@@ -14,4 +15,10 @@ public interface ProductMapper {
             @Mapping(target = "categoryName", source = "category.name"),
     })
     ProductDto toDto(Product product);
+
+    @Mappings({
+            @Mapping(target = "productImages", source = "images"),
+            @Mapping(target = "productVariants", source = "variants")
+    })
+    Product toEntity(CreateProductRequest productDto);
 }

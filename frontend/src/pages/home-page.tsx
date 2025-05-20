@@ -15,7 +15,7 @@ export const HomePage = () => {
   }
 
   const get = async () => {
-    ProductService.getAllUser().then((response) => {
+    ProductService.getAllProduct().then((response) => {
       console.log(response)
     }).catch((error) => {
       console.log(error)
