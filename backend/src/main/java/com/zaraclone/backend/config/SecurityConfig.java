@@ -31,13 +31,13 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-    private static final String[] AUTHORIZE_LIST_URL =
+    public static final String[] AUTHORIZE_LIST_URL =
     {
             "/api/v1/users/**",
             "/api/v1/carts/**",
             "/api/v1/transactions/**",
     };
-    private static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
+    public static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
             HttpMethod.GET, List.of("/api/v1/auth"),
             HttpMethod.POST, List.of("/api/v1/products", "/api/v1/category"),
             HttpMethod.PUT, List.of("/api/v1/category/**"),

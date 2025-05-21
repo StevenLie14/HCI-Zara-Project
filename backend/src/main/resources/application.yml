@@ -34,10 +34,10 @@ minio:
 app:
   jwt:
     secret: ${JWT_SECRET_KEY}
-    expires-in: 36000
+    expires-in: 24
   cookie:
     name: authToken
-    expires-in: 36000
+    expires-in: 24
 logging:
   level:
     org:

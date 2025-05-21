@@ -2,6 +2,7 @@ package com.zaraclone.backend.config;
 
 import com.zaraclone.backend.services.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,11 +22,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static com.zaraclone.backend.config.SecurityConfig.AUTHORIZE_LIST_URL;
+import static com.zaraclone.backend.config.SecurityConfig.AUTH_RULES;
 
 @Component
 @RequiredArgsConstructor
@@ -32,11 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-
-    private static final List<String> EXCLUDE_URLS = List.of(
-            "/api/v1/auth/login",
-            "/api/v1/auth/register"
-    );
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Value("${app.cookie.name}")
     private String cookieName;
@@ -55,7 +56,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return EXCLUDE_URLS.contains(request.getServletPath());
+        String path = request.getRequestURI();
+        HttpMethod method = HttpMethod.valueOf(request.getMethod());
+        boolean isInAuthorizeList = Arrays.stream(AUTHORIZE_LIST_URL)
+                .anyMatch(pattern -> pathMatcher.match(pattern, path));
+
+        boolean isInAuthRules = AUTH_RULES.getOrDefault(method, List.of()).stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, path));
+
+        return !(isInAuthorizeList || isInAuthRules);
+    }
+
+    private void clearJwtCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    private void sendJsonError(HttpServletResponse response, String message) {
+        try {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            String json = String.format("{\"error\": \"%s\"}", message);
+            response.getWriter().write(json);
+        } catch (IOException ioException) {
+            ioException.fillInStackTrace();
+        }
     }
 
     @Override
@@ -84,6 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
+
             email = jwtService.extractEmail(jwt);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -102,26 +132,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     securityContext.setAuthentication(authToken);
                 }
             }
-
             filterChain.doFilter(request, response);
-        }catch (ExpiredJwtException e) {
-            Cookie cookie = new Cookie(cookieName, "");
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
-
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT expired");
+        } catch (ExpiredJwtException ex) {
+            clearJwtCookie(response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            sendJsonError(response, "JWT expired");
+            ex.fillInStackTrace();
+        } catch (JwtException ex) {
+            clearJwtCookie(response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            sendJsonError(response, "Invalid JWT");
+            ex.fillInStackTrace();
         } catch (UsernameNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: User not found");
+            sendJsonError(response, "Unauthorized: User not found");
+            e.fillInStackTrace();
         } catch (AccessDeniedException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("Forbidden: Access denied");
+            sendJsonError(response, "Forbidden: Access denied");
+            e.fillInStackTrace();
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: " + e.getMessage());
+            sendJsonError(response, "Unauthorized");
+            e.fillInStackTrace();
         }
+
 
     }
 }

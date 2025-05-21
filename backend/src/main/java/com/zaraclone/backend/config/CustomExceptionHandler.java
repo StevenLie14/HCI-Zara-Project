@@ -2,11 +2,13 @@ package com.zaraclone.backend.config;
 
 import com.zaraclone.backend.exceptions.FileUploadException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,11 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class CustomExceptionHandler implements ErrorController {
+public class CustomExceptionHandler {
+
+    @Value("${app.cookie.name}")
+    private String cookieName;
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNotFound(NoHandlerFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found" + ex.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -44,9 +49,19 @@ public class CustomExceptionHandler implements ErrorController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Database error: " + ex.getMostSpecificCause().getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
