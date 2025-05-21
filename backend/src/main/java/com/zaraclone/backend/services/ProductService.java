@@ -30,7 +30,7 @@ public class ProductService {
         } else {
             var products = productRepository.findAll();
             System.out.println("Products: " + products);
-            return productRepository.findAllWithCategory().stream()
+            return productRepository.findAll().stream()
                     .map(productMapper::toDto)
                     .toList();
         }

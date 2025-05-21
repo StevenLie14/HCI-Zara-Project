@@ -13,22 +13,23 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "cart_items")
-public class CartItem {
+@Table(name = "transaction_items")
+public class TransactionItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private int quantity;
+    private int price;
     @CreatedDate
     private Timestamp createdAt;
     @LastModifiedDate
     private Timestamp updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "transaction_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude
-    private User user;
+    private Transaction transaction;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "variant_id", nullable = false)

@@ -46,6 +46,12 @@ public class User implements UserDetails {
     @LastModifiedDate
     private Timestamp updatedAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
