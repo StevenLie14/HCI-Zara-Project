@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -19,17 +20,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final AuthService authService;
 
     public void changePassword(ChangePasswordRequest request) {
-        var user = authService.getCurrentUser();
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Old password is incorrect");
+        var user = userRepository.findByEmail(request.getEmail())
+                .filter(u -> u.getVerificationDate() != null)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + request.getEmail()));
+
+        if (!request.getVerificationCode().equals(user.getVerificationCode()) ||
+                user.getVerificationExpiry().before(new Timestamp(System.currentTimeMillis()))) {
+            throw new IllegalArgumentException("Invalid or expired verification code");
         }
-        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("New password cannot be the same as the old password");
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
     }
 
@@ -44,14 +48,13 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
     }
 
-
-
     public UserDto updateUser (String id, UpdateUserRequest request) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
         userMapper.update(request, user);
         return userMapper.toDto(user);
     }
+
 
 
 }

@@ -33,14 +33,13 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     public static final String[] AUTHORIZE_LIST_URL =
     {
-            "/api/v1/users/**",
             "/api/v1/carts/**",
             "/api/v1/transactions/**",
     };
     public static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
-            HttpMethod.GET, List.of("/api/v1/auth"),
+            HttpMethod.GET, List.of("/api/v1/auth", "/api/v1/users", "/api/v1/users/**"),
             HttpMethod.POST, List.of("/api/v1/products", "/api/v1/category"),
-            HttpMethod.PUT, List.of("/api/v1/category/**"),
+            HttpMethod.PUT, List.of("/api/v1/category/**","/api/v1/users/**"),
             HttpMethod.DELETE, List.of("/api/v1/products/**", "/api/v1/category/**")
     );
 

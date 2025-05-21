@@ -1,9 +1,9 @@
 create table users (
     id varchar(36) primary key,
-    name varchar(255) not null,
-    password varchar(255) not null,
+    name varchar(255),
+    password varchar(255),
     email varchar(255) not null unique,
-    role varchar(255) not null,
+    role varchar(255),
     phone VARCHAR(20),
     address TEXT,
     city VARCHAR(100),

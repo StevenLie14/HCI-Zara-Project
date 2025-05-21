@@ -41,6 +41,10 @@ public class User implements UserDetails {
     private String profilePicture;
     private Date birthDate;
     private String gender;
+    private String verificationCode;
+    private Timestamp verificationDate;
+    private Timestamp verificationExpiry;
+
     @CreatedDate
     private Timestamp createdAt;
     @LastModifiedDate
