@@ -45,7 +45,7 @@ public class AuthService {
         return userMapper.toDto(user);
     }
 
-    public UserDto getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -55,7 +55,7 @@ public class AuthService {
         Object principal = authentication.getPrincipal();
 
         if (principal instanceof User) {
-            return userMapper.toDto((User) principal);
+            return (User) principal;
         }
 
         throw new AccessDeniedException("Invalid user principal");

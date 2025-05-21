@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -31,12 +32,44 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private static final String[] AUTHORIZE_LIST_URL =
-        {
-                "/api/v1/users/**",
-                "/api/v1/products/**",
+    {
+            "/api/v1/users/**",
+            "/api/v1/carts/**",
+            "/api/v1/transactions/**",
+    };
+    private static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
+            HttpMethod.GET, List.of("/api/v1/auth"),
+            HttpMethod.POST, List.of("/api/v1/products", "/api/v1/category"),
+            HttpMethod.PUT, List.of("/api/v1/category/**"),
+            HttpMethod.DELETE, List.of("/api/v1/products/**", "/api/v1/category/**")
+    );
 
-        };
-
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> {
+                    AUTH_RULES.forEach((method, urls) -> {
+                        for (String url : urls) {
+                            req.requestMatchers(method, url).authenticated();
+                        }
+                    });
+                    req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(AUTHORIZE_LIST_URL).authenticated()
+                        .anyRequest().permitAll();
+                })
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -49,32 +82,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers(AUTHORIZE_LIST_URL).authenticated()
-                                .anyRequest()
-                                .permitAll()
-                )
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler)
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
     }
 
 }

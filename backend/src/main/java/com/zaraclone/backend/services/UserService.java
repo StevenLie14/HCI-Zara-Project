@@ -3,7 +3,6 @@ package com.zaraclone.backend.services;
 import com.zaraclone.backend.dtos.request.ChangePasswordRequest;
 import com.zaraclone.backend.dtos.request.UpdateUserRequest;
 import com.zaraclone.backend.dtos.response.UserDto;
-import com.zaraclone.backend.entities.User;
 import com.zaraclone.backend.mappers.UserMapper;
 import com.zaraclone.backend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,12 +19,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final AuthService authService;
 
-    public void changePassword(String userId, ChangePasswordRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        if (!user.getPassword().equals(request.getOldPassword())) {
+    public void changePassword(ChangePasswordRequest request) {
+        var user = authService.getCurrentUser();
+         if (!user.getPassword().equals(request.getOldPassword())) {
             throw new IllegalArgumentException("Old password is incorrect");
         }
 

@@ -21,6 +21,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Enumerated(EnumType.STRING)
     private TransactionStatus status;
     @CreatedDate
     private Timestamp createdAt;

@@ -28,7 +28,8 @@ public class CartService {
 
     public CartItemDto createCartItem(CreateCartItemRequest createCartItemRequest) {
         var user = authService.getCurrentUser();
-        var cartItem = cartMapper.toEntity(createCartItemRequest,user.getId());
+        var cartItem = cartMapper.toEntity(createCartItemRequest,user);
+        cartItem.setUser(user);
         return cartMapper.toDto(cartRepository.save(cartItem));
     }
 

@@ -4,6 +4,7 @@ import com.zaraclone.backend.dtos.request.LoginRequest;
 import com.zaraclone.backend.dtos.request.RegisterUserRequest;
 import com.zaraclone.backend.dtos.response.AuthDto;
 import com.zaraclone.backend.dtos.response.UserDto;
+import com.zaraclone.backend.mappers.UserMapper;
 import com.zaraclone.backend.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class AuthController {
     @Value("${app.cookie.expires-in}")
     private int expiresIn;
     private final AuthService authService;
+    private final UserMapper userMapper;
 
     @PostMapping("/login")
     public ResponseEntity<AuthDto> login(
@@ -53,6 +55,6 @@ public class AuthController {
     @GetMapping
     public ResponseEntity<UserDto> getCurrentUser() {
         var user = authService.getCurrentUser();
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 }

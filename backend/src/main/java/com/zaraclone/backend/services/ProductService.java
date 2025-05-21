@@ -37,10 +37,10 @@ public class ProductService {
     }
 
     public ProductDto createProduct(CreateProductRequest productRequest, List<MultipartFile> variantImages, List<MultipartFile> productImages) {
-        var product = productMapper.toEntity(productRequest);
         var category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + productRequest.getCategoryId()));
-        product.setCategory(category);
+        var product = productMapper.toEntity(productRequest,category);
+
 
         try {
             for (MultipartFile file : variantImages) {
