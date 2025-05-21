@@ -3,10 +3,7 @@ package com.zaraclone.backend.entities;
 
 import com.zaraclone.backend.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,15 +11,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User implements UserDetails {
@@ -34,6 +32,15 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String phone;
+    private String address;
+    private String city;
+    private String province;
+    private String country;
+    private String postalCode;
+    private String profilePicture;
+    private Date birthDate;
+    private String gender;
     @CreatedDate
     private Timestamp createdAt;
     @LastModifiedDate

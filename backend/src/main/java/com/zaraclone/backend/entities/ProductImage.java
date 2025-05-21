@@ -1,10 +1,11 @@
 package com.zaraclone.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
 
@@ -13,16 +14,21 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "product_images")
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String productImage;
+    @CreatedDate
     private Timestamp createdAt;
+    @LastModifiedDate
     private Timestamp updatedAt;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "product_id")
-//    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Product product;
 }

@@ -1,18 +1,22 @@
 package com.zaraclone.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
 
-@Data
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
+@Data
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "product_variants")
 public class ProductVariant {
     @Id
@@ -23,11 +27,15 @@ public class ProductVariant {
     private String variantImage;
     private int price;
     private int stock;
+    @CreatedDate
     private Timestamp createdAt;
+    @LastModifiedDate
     private Timestamp updatedAt;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id")
-//    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Product product;
 
 }

@@ -22,6 +22,8 @@ server:
   error:
     whitelabel:
       enabled: false
+    include-message: always
+    include-binding-errors: always
 minio:
   url: ${MINIO_ENDPOINT}
   access:
@@ -35,7 +37,7 @@ app:
     expires-in: 36000
   cookie:
     name: authToken
-    expires-in: 900
+    expires-in: 36000
 logging:
   level:
     org:

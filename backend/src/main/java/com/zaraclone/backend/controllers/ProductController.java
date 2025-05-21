@@ -3,8 +3,6 @@ package com.zaraclone.backend.controllers;
 
 import com.zaraclone.backend.dtos.request.CreateProductRequest;
 import com.zaraclone.backend.dtos.response.ProductDto;
-import com.zaraclone.backend.mappers.ProductMapper;
-import com.zaraclone.backend.repositories.ProductRepository;
 import com.zaraclone.backend.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,9 +30,6 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String id) {
         var product = productService.getProductById(id);
-        if (product == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(product);
     }
 
@@ -51,10 +46,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductById(@PathVariable String id) {
-        var isDeleted = productService.deleteProductById(id);
-        if (!isDeleted) {
-            return ResponseEntity.notFound().build();
-        }
+        productService.deleteProductById(id);
         return ResponseEntity.noContent().build();
     }
 

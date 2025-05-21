@@ -1,6 +1,7 @@
 package com.zaraclone.backend.config;
 
 import com.zaraclone.backend.services.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -30,6 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    private static final List<String> EXCLUDE_URLS = List.of(
+            "/api/v1/auth/login",
+            "/api/v1/auth/register"
+    );
 
     @Value("${app.cookie.name}")
     private String cookieName;
@@ -44,6 +51,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         return null;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return EXCLUDE_URLS.contains(request.getServletPath());
     }
 
     @Override
@@ -92,6 +104,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+        }catch (ExpiredJwtException e) {
+            Cookie cookie = new Cookie(cookieName, "");
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT expired");
         } catch (UsernameNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized: User not found");

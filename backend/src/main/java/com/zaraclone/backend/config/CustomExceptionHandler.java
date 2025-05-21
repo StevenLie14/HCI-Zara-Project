@@ -3,8 +3,10 @@ package com.zaraclone.backend.config;
 import com.zaraclone.backend.exceptions.FileUploadException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,10 +39,15 @@ public class CustomExceptionHandler implements ErrorController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
-//    @ExceptionHandler(DataIntegrityViolationException.class)
-//    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-//        return ResponseEntity.status(HttpStatus.CONFLICT).body("Database error: " + ex.getMostSpecificCause().getMessage());
-//    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Database error: " + ex.getMostSpecificCause().getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidation(MethodArgumentNotValidException ex) {

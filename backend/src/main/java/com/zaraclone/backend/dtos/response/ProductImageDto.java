@@ -4,20 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class ProductDto {
+public class ProductImageDto {
     private String id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private CategoryDto category;
-    private List<ProductVariantDto> productVariants;
-    private List<ProductImageDto> productImages;
+    private String productImage;
+    private String productId;
+    private int price;
+    private int stock;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createdAt;

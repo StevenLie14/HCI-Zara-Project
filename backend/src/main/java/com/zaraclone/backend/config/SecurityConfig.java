@@ -31,11 +31,12 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private static final String[] AUTHORIZE_LIST_URL =
-            {
-                    "/api/v1/users/**",
-                    "/api/v1/products/**",
+        {
+                "/api/v1/users/**",
+                "/api/v1/products/**",
 
-            };
+        };
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -50,6 +51,8 @@ public class SecurityConfig {
         return source;
     }
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
@@ -57,6 +60,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(AUTHORIZE_LIST_URL).authenticated()
                                 .anyRequest()
                                 .permitAll()
