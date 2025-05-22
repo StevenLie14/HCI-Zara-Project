@@ -1,7 +1,7 @@
-import {AuthService} from "src/services/auth-service.ts";
-import type {AuthRequest} from "src/models/dto/request/auth-request.ts";
+import {AuthService} from "@/services/auth-service.ts";
+import type {AuthRequest} from "@/models/dto/request/auth/auth-request.ts";
 import {useEffect} from "react";
-import {ProductService} from "src/services/product-service.ts";
+import {ProductService} from "@/services/product-service.ts";
 
 export const HomePage = () => {
   const createUser = async () => {

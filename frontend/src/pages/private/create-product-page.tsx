@@ -4,10 +4,10 @@ import { useState } from "react"
 import { useForm, useFieldArray, Controller, type SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2, Plus, ImageIcon } from "lucide-react"
-import {type CreateProductDto, createProductSchema} from "src/models/dto/request/create-product.ts";
-import {ProductService} from "src/services/product-service.ts";
-import {changeFileName} from "src/utils/utils.ts";
-import {getProjectEnvVariables} from "src/utils/env.ts";
+import {type CreateProductRequest, createProductSchema} from "@/models/dto/request/create-product.ts";
+import {ProductService} from "@/services/product-service.ts";
+import {changeFileName} from "@/utils/utils.ts";
+import {getProjectEnvVariables} from "@/utils/env.ts";
 
 
 
@@ -24,7 +24,7 @@ export default function CreateProductPage() {
     getValues,
     formState: { errors },
     reset,
-  } = useForm<CreateProductDto>({
+  } = useForm<CreateProductRequest>({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: "",
@@ -89,7 +89,7 @@ export default function CreateProductPage() {
     }
   }
 
-  const onSubmit: SubmitHandler<CreateProductDto> = async (data) => {
+  const onSubmit: SubmitHandler<CreateProductRequest> = async (data) => {
     setIsSubmitting(true)
     try {
       console.log("Form submitted:", data)

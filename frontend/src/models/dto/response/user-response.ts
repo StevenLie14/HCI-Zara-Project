@@ -1,3 +1,9 @@
 export interface UserResponse {
-  message : string
+  name : string;
+  email : string;
+  phoneNumber : string;
+  address : string;
+  role : string;
+  createdAt : string;
+
 }

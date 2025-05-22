@@ -12,4 +12,4 @@ export const createProductVariantSchema = z.object({
   stock: z.number().min(0, "Stock must be at least 0"),
 });
 
-export type CreateProductVariantDto = z.infer<typeof createProductVariantSchema>
+export type CreateProductVariantRequest = z.infer<typeof createProductVariantSchema>

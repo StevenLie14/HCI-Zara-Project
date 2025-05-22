@@ -1,7 +1,99 @@
-import {createContext} from "react";
+import {createContext, type ReactNode, useContext, useEffect, useState} from "react";
+import type {UserResponse} from "@/models/dto/response/user-response.ts";
+import {AuthService} from "@/services/auth-service.ts";
+import type {AuthRequest} from "@/models/dto/request/auth/auth-request.ts";
+import type {Nullable} from "@/models/types/utils";
+import {useMutation, type UseMutationResult} from "@tanstack/react-query";
+import {ToastService} from "@/utils/toast.ts";
+import type {AuthResponse} from "@/models/dto/response/auth-response.ts";
+import type {RegisterRequest} from "@/models/dto/request/auth/register-request.ts";
+import {useNavigate} from "react-router-dom";
 
 interface AuthContextProps {
-
+  me: UserResponse | null;
+  isAuthenticated: Boolean | null;
+  login: UseMutationResult<AuthResponse,Error, AuthRequest>;
+  logout: UseMutationResult<AuthResponse,Error,void>;
+  register: UseMutationResult<AuthResponse,Error, RegisterRequest>;
 }
 
-export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
+interface AuthProps {
+  children: ReactNode;
+}
+
+export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
+
+export function AuthProvider({ children }: AuthProps) {
+  const [user, setUser] = useState<Nullable<UserResponse>>(null);
+  const [ isAuthenticated, setIsAuthenticated ] = useState<Nullable<Boolean>>(null);
+  const navigate = useNavigate();
+
+  const login = useMutation({
+    mutationFn: AuthService.login,
+    onSuccess: () => {
+      ToastService.success("Login successful");
+      navigate("/")
+    },
+    onError: (error) => {
+      ToastService.error(error.message);
+    },
+  })
+
+  const logout = useMutation({
+    mutationFn: AuthService.logout,
+    onSuccess: () => {
+      ToastService.success("Logout successful");
+      navigate("/login")
+    },
+    onError: (error) => {
+      ToastService.error(error.message);
+    },
+  })
+
+  const getCurrentUser = useMutation({
+    mutationFn: AuthService.me,
+    onSuccess: (resp) => {
+      setUser(resp.user);
+      setIsAuthenticated(true);
+    },
+    onError: () => {
+      setUser(null);
+      setIsAuthenticated(false);
+    },
+  })
+
+  const register = useMutation({
+    mutationFn: AuthService.register,
+    onSuccess: () => {
+      ToastService.success("Registration successful");
+      navigate("/")
+    },
+    onError: (error) => {
+      ToastService.error(error.message);
+    },
+  })
+
+
+
+  useEffect(() => {
+    getCurrentUser.mutate();
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={
+        {
+          me: user,
+          login: login,
+          logout: logout,
+          register: register,
+          isAuthenticated : isAuthenticated
+        }
+      }
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);

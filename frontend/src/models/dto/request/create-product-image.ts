@@ -9,4 +9,4 @@ export const createProductImageSchema = z.object({
     }).optional()
 });
 
-export type CreateProductImageDto = z.infer<typeof createProductImageSchema>
+export type CreateProductImageRequest = z.infer<typeof createProductImageSchema>

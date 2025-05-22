@@ -10,4 +10,4 @@ export const createProductSchema = z.object({
   images: z.array(createProductImageSchema).min(1, "At least one product image is required"),
 });
 
-export type CreateProductDto = z.infer<typeof createProductSchema>
+export type CreateProductRequest = z.infer<typeof createProductSchema>

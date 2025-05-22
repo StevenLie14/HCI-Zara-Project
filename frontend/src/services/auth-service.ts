@@ -1,17 +1,33 @@
 import {BaseService} from "./base-service.ts";
-import type {AxiosResponse} from "axios";
-import type {AuthRequest} from "src/models/dto/request/auth-request.ts";
+import type {AuthRequest} from "@/models/dto/request/auth/auth-request.ts";
 import type {AuthResponse} from "src/models/dto/response/auth-response.ts";
+import type {RegisterRequest} from "@/models/dto/request/auth/register-request.ts";
+import type {GetCodeResponse} from "@/models/dto/response/get-code-response.ts";
 
 export class AuthService extends BaseService {
   private static url = "/api/v1/auth"
-  public static login = async (request : AuthRequest) => {
-    const response: AxiosResponse<AuthResponse> = await AuthService.axios().post(AuthService.url+"/login",request)
-    if (response.data.token) {
-      localStorage.setItem("accessToken", response.data.token);
-    }
-    return response.data
+
+  public static login = async (request : AuthRequest) : Promise<AuthResponse> => {
+    return this.post<AuthResponse>(this.url+"/login", request, "Login Failed")
   }
 
+  public static register = async (request : RegisterRequest) : Promise<AuthResponse> => {
+    return this.post<AuthResponse>(this.url+"/register", request, "Register Failed")
+  }
 
+  public static me = async () => {
+    return this.get<AuthResponse>(this.url, "Not Authenticated")
+  }
+
+  public static logout = async () => {
+    return this.get<AuthResponse>(this.url+"/logout", "Not Authenticated")
+  }
+
+  public static sendResetPasswordOtp = async (email: string) : Promise<GetCodeResponse> => {
+    return this.get<GetCodeResponse>(this.url+"/reset/"+email, "Failed to send reset password OTP")
+  }
+
+  public static getRegisterOtp = async (email: string) : Promise<GetCodeResponse> => {
+     return this.get<GetCodeResponse>(this.url+"/register/"+email, "Failed to get OTP")
+  }
 }

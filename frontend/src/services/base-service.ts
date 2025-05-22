@@ -1,4 +1,4 @@
-import axios, {type AxiosInstance} from "axios";
+import axios, {type AxiosInstance, type AxiosResponse} from "axios";
 import {getProjectEnvVariables} from "src/utils/env.ts";
 
 export abstract class BaseService {
@@ -14,17 +14,40 @@ export abstract class BaseService {
         withCredentials: true,
       })
 
-      // BaseService.axiosInstance.interceptors.response.use(
-      //   response => response,
-      //   error => {
-      //     if (error.response?.status === 401) {
-      //       localStorage.removeItem("accessToken");
-      //       window.location.href = "/login";
-      //     }
-      //     return Promise.reject(error);
-      //   }
-      // );
     }
     return BaseService.axiosInstance
+  }
+
+  private static request = async<T> (callback : () => Promise<AxiosResponse<T>>, fallback: string) : Promise<T> => {
+    try {
+      const response = await callback();
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data || fallback;
+        throw new Error(typeof message === "string" ? message : fallback);
+      }
+      throw new Error("An unexpected error occurred.");
+    }
+  }
+
+  protected static get = async<T> (url : string, fallback : string) : Promise<T> => {
+    return this.request(() => BaseService.axios().get<T>(url), fallback);
+  }
+
+  protected static post = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
+    return this.request(() => BaseService.axios().post<T>(url, data), fallback);
+  }
+
+  protected static put = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
+    return this.request(() => BaseService.axios().put<T>(url, data), fallback);
+  }
+
+  protected static delete = async<T> (url : string, fallback : string) : Promise<T> => {
+    return this.request(() => BaseService.axios().delete<T>(url), fallback);
+  }
+
+  protected static patch = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
+    return this.request(() => BaseService.axios().patch<T>(url, data), fallback);
   }
 }

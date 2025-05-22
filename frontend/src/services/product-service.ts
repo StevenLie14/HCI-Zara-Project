@@ -1,5 +1,5 @@
 import {BaseService} from "./base-service.ts";
-import type {CreateProductDto} from "src/models/dto/request/create-product.ts";
+import type {CreateProductRequest} from "@/models/dto/request/create-product.ts";
 
 export class ProductService extends BaseService {
   private static url = "/api/v1/products"
@@ -9,7 +9,7 @@ export class ProductService extends BaseService {
     return response.data
   }
 
-  public static createProduct = async (productRequest : CreateProductDto ) => {
+  public static createProduct = async (productRequest : CreateProductRequest ) => {
     const formData = new FormData()
     const productData = {
       name: productRequest.name,
