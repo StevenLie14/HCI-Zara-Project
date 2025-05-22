@@ -15,8 +15,8 @@ const BackButton = () => {
 
 
   return (
-    <Button onClick={handleBack} variant="ghost" size="icon" className="h-8 w-8" asChild>
-        <ArrowLeft className="h-4 w-4" />
+    <Button onClick={handleBack} variant="ghost" size="default">
+        <ArrowLeft className="h-8 w-8 mr-1" /> Back
     </Button>
   );
 }

@@ -3,8 +3,8 @@ import BackButton from "@/components/back-button.tsx";
 
 const ResetPasswordHeader = () => {
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <div className="absolute left-4 top-4">
+    <div className="flex flex-col items-center space-y-2">
+      <div className="w-full">
         <BackButton />
       </div>
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
