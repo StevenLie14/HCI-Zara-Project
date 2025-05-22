@@ -1,23 +1,23 @@
-import {User2} from "lucide-react";
+import {Mail} from "lucide-react";
 import BackButton from "@/components/back-button.tsx";
 
-const LoginHeader = () => {
+const ResetPasswordHeader = () => {
   return (
     <div className="flex flex-col items-center space-y-4">
       <div className="absolute left-4 top-4">
         <BackButton />
       </div>
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-        <User2 className="h-6 w-6 text-gray-600" />
+        <Mail className="h-6 w-6 text-gray-600" />
       </div>
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">Login</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Forgot your password?</h1>
         <p className="text-sm text-muted-foreground">
-          Welcome back! Sign in to your account
+          Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
     </div>
   )
 }
 
-export default LoginHeader;
+export  default ResetPasswordHeader

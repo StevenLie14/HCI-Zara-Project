@@ -17,12 +17,7 @@ const Layout = () => {
   }, [location.state]);
   return (
     <AuthProvider>
-      <div className="flex flex-col h-screen">
-        <main className="flex-grow p-4">
           <Outlet />
-        </main>
-
-      </div>
     </AuthProvider>
   );
 }

@@ -23,8 +23,8 @@ export class AuthService extends BaseService {
     return this.get<AuthResponse>(this.url+"/logout", "Not Authenticated")
   }
 
-  public static sendResetPasswordOtp = async (email: string) : Promise<GetCodeResponse> => {
-    return this.get<GetCodeResponse>(this.url+"/reset/"+email, "Failed to send reset password OTP")
+  public static getResetPasswordOtp = async (email: string) : Promise<GetCodeResponse> => {
+    return this.get<GetCodeResponse>(this.url+"/reset-password/"+email, "Failed to send reset password OTP")
   }
 
   public static getRegisterOtp = async (email: string) : Promise<GetCodeResponse> => {

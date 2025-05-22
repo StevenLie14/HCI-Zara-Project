@@ -7,6 +7,7 @@ import ProtectedRoute from "@/router/protected-route.tsx";
 import {Role} from "@/models/enum/role-enum.ts";
 import Layout from "@/pages/layout.tsx";
 import AuthRoute from "@/router/auth-route.tsx";
+import ResetPasswordPage from "@/pages/public/reset-password-page.tsx";
 
 export const routes = createBrowserRouter(
   [
@@ -15,9 +16,16 @@ export const routes = createBrowserRouter(
       element: <Layout />,
       children: [
         {
-          path: '/',
-          index: true,
-          element : <HomePage />
+          children: [
+            {
+              path: '*',
+              element: <HomePage />
+            },
+            {
+              path: '/reset-password',
+              element: <ResetPasswordPage />
+            }
+          ]
         },
         {
           element: <ProtectedRoute role={Role.USER} />,
