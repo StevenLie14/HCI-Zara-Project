@@ -20,6 +20,7 @@ interface AuthContextProps {
   isAuthenticated: Boolean | null;
   login: UseMutationResult<AuthResponse, Error, AuthRequest>;
   logout: UseMutationResult<AuthResponse, Error, void>;
+  getMe: UseMutationResult<UserResponse, Error, void>;
   register: UseMutationResult<AuthResponse, Error, RegisterRequest>;
 }
 
@@ -98,6 +99,7 @@ export function AuthProvider({ children }: AuthProps) {
         login: login,
         logout: logout,
         register: register,
+        getMe: getCurrentUser,
         isAuthenticated: isAuthenticated,
       }}
     >

@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/context/theme-context.tsx";
 import { ToastService } from "@/utils/toast.ts";
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "@/components/navbar.tsx";
 
 const Layout = () => {
   const location = useLocation();
@@ -18,7 +19,10 @@ const Layout = () => {
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme={"system"} storageKey={"vite-ui-theme"}>
-        <Outlet />
+        <div className="min-h-screen">
+          <Navbar />
+          <Outlet />
+        </div>
       </ThemeProvider>
     </AuthProvider>
   );

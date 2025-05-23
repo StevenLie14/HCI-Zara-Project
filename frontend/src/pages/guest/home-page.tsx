@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar.tsx";
 import { useEffect } from "react";
 
 export const HomePage = () => {
@@ -6,7 +5,6 @@ export const HomePage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
     </div>
   );
 };

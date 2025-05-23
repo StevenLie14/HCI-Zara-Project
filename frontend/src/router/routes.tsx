@@ -8,6 +8,7 @@ import ResetPasswordPage from "@/pages/public/reset-password-page.tsx";
 import AuthRoute from "@/router/auth-route.tsx";
 import ProtectedRoute from "@/router/protected-route.tsx";
 import { createBrowserRouter } from "react-router-dom";
+import ProfilePage from "@/pages/private/profile-page.tsx";
 
 export const routes = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const routes = createBrowserRouter([
             path: "/create-product",
             element: <CreateProductPage />,
           },
+          {
+            path: "/profile",
+            element: <ProfilePage />,
+          }
         ],
       },
       {

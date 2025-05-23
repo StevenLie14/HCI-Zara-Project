@@ -33,7 +33,7 @@ const Navbar = () => {
             Zara
           </Link>
 
-          <nav className="hidden md:block">
+          <nav className="hidden lg:block">
             <ul className="flex space-x-6">
               <li className="group relative">
                 <button className="flex items-center gap-1 font-medium">
