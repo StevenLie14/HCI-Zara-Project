@@ -7,11 +7,8 @@ import java.sql.Timestamp;
 
 @Data
 public class UpdateUserRequest {
-    private String username;
-    private String email;
-    private String gender;
+    private String name;
     private String phone;
-    private Timestamp verificationDate;
+    private String gender;
     private Date birthDate;
-    private String profilePicture;
 }

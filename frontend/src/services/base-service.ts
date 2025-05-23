@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosResponse } from "axios";
+import axios, {AxiosHeaders, type AxiosInstance, type AxiosResponse} from "axios";
 import { getProjectEnvVariables } from "src/utils/env.ts";
 
 export abstract class BaseService {
@@ -44,16 +44,18 @@ export abstract class BaseService {
     url: string,
     fallback: string,
     data?: unknown,
+    headers?: AxiosHeaders,
   ): Promise<T> => {
-    return this.request(() => BaseService.axios().post<T>(url, data), fallback);
+    return this.request(() => BaseService.axios().post<T>(url, data, {headers: headers}), fallback);
   };
 
   protected static put = async <T>(
     url: string,
-    data: unknown,
     fallback: string,
+    data?: unknown,
+    headers?: AxiosHeaders,
   ): Promise<T> => {
-    return this.request(() => BaseService.axios().put<T>(url, data), fallback);
+    return this.request(() => BaseService.axios().put<T>(url, data, {headers: headers}), fallback);
   };
 
   protected static delete = async <T>(
@@ -65,11 +67,12 @@ export abstract class BaseService {
 
   protected static patch = async <T>(
     url: string,
-    data: unknown,
     fallback: string,
+    data?: unknown,
+    headers?: AxiosHeaders,
   ): Promise<T> => {
     return this.request(
-      () => BaseService.axios().patch<T>(url, data),
+      () => BaseService.axios().patch<T>(url, data, {headers: headers}),
       fallback,
     );
   };

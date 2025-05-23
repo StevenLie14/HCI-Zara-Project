@@ -14,12 +14,13 @@ public class UserDto {
     private String id;
     private String name;
     private String email;
-    private String gender;
-    private String phone;
-    private Timestamp verificationDate;
-    private Date birthDate;
-    private String profilePicture;
     private Role role;
+    private String phone;
+    private String profilePicture;
+    private String gender;
+    private String birthDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String verificationDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

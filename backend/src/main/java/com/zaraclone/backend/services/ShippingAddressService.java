@@ -27,25 +27,24 @@ public class ShippingAddressService {
                 .toList();
     }
 
-    public List<ShippingAddressDto> createOrUpdateShippingAddress(List<CreateOrUpdateShippingAddressRequest> requests) {
+    public ShippingAddressDto createShippingAddress(CreateOrUpdateShippingAddressRequest request) {
         var user = authService.getCurrentUser();
-        List<ShippingAddressDto> dto = new ArrayList<>();
-        requests.forEach(request -> {
-            ShippingAddress shippingAddress;
-            if (request.getId() != null) {
-                shippingAddress = shippingAddressRepository.findById(request.getId()).orElseThrow(
-                        () -> new EntityNotFoundException("Shipping Address not found with ID: " + request.getId()));
-                shippingAddressMapper.update(request, shippingAddress);
-                dto.add(shippingAddressMapper.toDto(shippingAddress));
+        ShippingAddress shippingAddress = shippingAddressMapper.toEntity(request);
+        shippingAddress.setUser(user);
+        shippingAddressRepository.save(shippingAddress);
+        return shippingAddressMapper.toDto(shippingAddress);
+    }
 
-            } else {
-                shippingAddress = shippingAddressMapper.toEntity(request);
-                dto.add(shippingAddressMapper.toDto(shippingAddress));
-            }
-            shippingAddress.setUser(user);
-            shippingAddressRepository.save(shippingAddress);
-        });
-        return dto;
+    public ShippingAddressDto updateShippingAddress(String id, CreateOrUpdateShippingAddressRequest request) {
+        var user = authService.getCurrentUser();
+        var shippingAddress = shippingAddressRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Shipping Address not found with ID: " + id));
+        if (!shippingAddress.getUser().getId().equals(user.getId())) {
+            throw new EntityNotFoundException("Shipping Address does not belong to the current user");
+        }
+        shippingAddressMapper.update(request, shippingAddress);
+        shippingAddressRepository.save(shippingAddress);
+        return shippingAddressMapper.toDto(shippingAddress);
     }
 
     public void deleteShippingAddressById(String id) {

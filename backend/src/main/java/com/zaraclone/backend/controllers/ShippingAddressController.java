@@ -22,9 +22,18 @@ public class ShippingAddressController {
     }
 
     @PostMapping
-    public ResponseEntity<List<ShippingAddressDto>> createOrUpdateCartItem(@RequestBody List<CreateOrUpdateShippingAddressRequest> request) {
-        List<ShippingAddressDto> dto = shippingAddressService.createOrUpdateShippingAddress(request);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<ShippingAddressDto> createShippingAddress(
+            @RequestBody CreateOrUpdateShippingAddressRequest request) {
+        var shippingAddress = shippingAddressService.createShippingAddress(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(shippingAddress);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ShippingAddressDto> updateShippingAddress(
+            @PathVariable String id,
+            @RequestBody CreateOrUpdateShippingAddressRequest request) {
+        var shippingAddress = shippingAddressService.updateShippingAddress(id, request);
+        return ResponseEntity.ok(shippingAddress);
     }
 
     @DeleteMapping("/{id}")
