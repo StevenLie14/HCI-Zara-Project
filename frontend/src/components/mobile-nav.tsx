@@ -1,26 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Menu, User, ShoppingBag, Heart, LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {useAuth} from "@/context/auth-context.tsx";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useAuth } from "@/context/auth-context.tsx";
+import { Heart, LogOut, Menu, ShoppingBag, User } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function MobileNav() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { isAuthenticated, me, logout } = useAuth()
+  const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, me, logout } = useAuth();
 
   const categories = [
     {
       name: "Women",
-      subcategories: ["New In", "Clothing", "Shoes", "Accessories", "Dresses", "Tops"],
+      subcategories: [
+        "New In",
+        "Clothing",
+        "Shoes",
+        "Accessories",
+        "Dresses",
+        "Tops",
+      ],
     },
     {
       name: "Men",
-      subcategories: ["New In", "Clothing", "Shoes", "Accessories", "Suits", "Shirts"],
+      subcategories: [
+        "New In",
+        "Clothing",
+        "Shoes",
+        "Accessories",
+        "Suits",
+        "Shirts",
+      ],
     },
     {
       name: "Kids",
@@ -28,9 +54,16 @@ export function MobileNav() {
     },
     {
       name: "Accessories",
-      subcategories: ["Bags", "Jewelry", "Scarves", "Belts", "Hats", "Sunglasses"],
+      subcategories: [
+        "Bags",
+        "Jewelry",
+        "Scarves",
+        "Belts",
+        "Hats",
+        "Sunglasses",
+      ],
     },
-  ]
+  ];
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -48,12 +81,19 @@ export function MobileNav() {
         {isAuthenticated && (
           <div className="flex items-center gap-3 mb-6 px-4">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={me?.profilePicture || "/placeholder.svg?height=40&width=40"} alt={me?.name || "User"} />
+              <AvatarImage
+                src={
+                  me?.profilePicture || "/placeholder.svg?height=40&width=40"
+                }
+                alt={me?.name || "User"}
+              />
               <AvatarFallback>{me?.name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span className="font-medium">{me?.name || "User"}</span>
-              <span className="text-xs text-muted-foreground">{me?.email || "user@example.com"}</span>
+              <span className="text-xs text-muted-foreground">
+                {me?.email || "user@example.com"}
+              </span>
             </div>
           </div>
         )}
@@ -62,12 +102,17 @@ export function MobileNav() {
           <Accordion type="multiple" className="w-full">
             {categories.map((category) => (
               <AccordionItem value={category.name} key={category.name}>
-                <AccordionTrigger className="px-4 py-3">{category.name}</AccordionTrigger>
+                <AccordionTrigger className="px-4 py-3">
+                  {category.name}
+                </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-col space-y-2 pl-4">
                     {category.subcategories.map((subcategory) => (
                       <SheetClose asChild key={subcategory}>
-                        <Link to="#" className="py-2 px-4 hover:bg-accent rounded-md transition-colors">
+                        <Link
+                          to="#"
+                          className="py-2 px-4 hover:bg-accent rounded-md transition-colors"
+                        >
                           {subcategory}
                         </Link>
                       </SheetClose>
@@ -136,5 +181,5 @@ export function MobileNav() {
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

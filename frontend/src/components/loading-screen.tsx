@@ -1,41 +1,41 @@
-import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
-import { Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface LoadingScreenProps {
-  isLoading?: boolean
-  text?: string
-  fullScreen?: boolean
-  className?: string
-  logo?: boolean
-  spinnerSize?: number
-  spinnerColor?: string
+  isLoading?: boolean;
+  text?: string;
+  fullScreen?: boolean;
+  className?: string;
+  logo?: boolean;
+  spinnerSize?: number;
+  spinnerColor?: string;
 }
 
 const LoadingScreen = ({
-                                isLoading = true,
-                                text = "Loading",
-                                fullScreen = true,
-                                className,
-                                logo = true,
-                                spinnerSize = 40,
-                              }: LoadingScreenProps) => {
-  const [dots, setDots] = useState(".")
+  isLoading = true,
+  text = "Loading",
+  fullScreen = true,
+  className,
+  logo = true,
+  spinnerSize = 40,
+}: LoadingScreenProps) => {
+  const [dots, setDots] = useState(".");
 
   useEffect(() => {
-    if (!isLoading) return
+    if (!isLoading) return;
 
     const interval = setInterval(() => {
       setDots((prev) => {
-        if (prev === "...") return "."
-        return prev + "."
-      })
-    }, 500)
+        if (prev === "...") return ".";
+        return prev + ".";
+      });
+    }, 500);
 
-    return () => clearInterval(interval)
-  }, [isLoading])
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
-  if (!isLoading) return null
+  if (!isLoading) return null;
 
   return (
     <div
@@ -48,7 +48,9 @@ const LoadingScreen = ({
       <div className="flex flex-col items-center gap-4">
         {logo && (
           <div className="mb-4">
-            <h1 className="text-3xl font-bold uppercase tracking-widest">ZARA</h1>
+            <h1 className="text-3xl font-bold uppercase tracking-widest">
+              ZARA
+            </h1>
           </div>
         )}
         <Loader2 className="animate-spin" size={spinnerSize} />
@@ -60,7 +62,7 @@ const LoadingScreen = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoadingScreen
+export default LoadingScreen;

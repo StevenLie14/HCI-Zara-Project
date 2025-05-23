@@ -1,8 +1,8 @@
-import {Outlet, useLocation} from "react-router-dom";
-import {useEffect} from "react";
-import {ToastService} from "@/utils/toast.ts";
-import {AuthProvider} from "@/context/auth-context.tsx";
-import {ThemeProvider} from "@/context/theme-context.tsx";
+import { AuthProvider } from "@/context/auth-context.tsx";
+import { ThemeProvider } from "@/context/theme-context.tsx";
+import { ToastService } from "@/utils/toast.ts";
+import { useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
@@ -14,7 +14,6 @@ const Layout = () => {
     if (location.state && location.state.success) {
       ToastService.success(location.state.success);
     }
-
   }, [location.state]);
   return (
     <AuthProvider>
@@ -23,6 +22,6 @@ const Layout = () => {
       </ThemeProvider>
     </AuthProvider>
   );
-}
+};
 
-export default Layout
+export default Layout;

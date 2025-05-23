@@ -1,5 +1,5 @@
-import {UserPlus} from "lucide-react";
 import BackButton from "@/components/back-button.tsx";
+import { UserPlus } from "lucide-react";
 
 const RegisterHeader = () => {
   return (
@@ -12,10 +12,12 @@ const RegisterHeader = () => {
       </div>
       <div className="space-y-1 text-center">
         <h1 className="text-xl font-semibold tracking-tight">Register</h1>
-        <p className="text-sm text-muted-foreground">Let's get you started with an account</p>
+        <p className="text-sm text-muted-foreground">
+          Let's get you started with an account
+        </p>
       </div>
     </div>
   );
-}
+};
 
 export default RegisterHeader;

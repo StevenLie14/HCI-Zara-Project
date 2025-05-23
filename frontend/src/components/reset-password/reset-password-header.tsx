@@ -1,5 +1,5 @@
-import {Mail} from "lucide-react";
 import BackButton from "@/components/back-button.tsx";
+import { Mail } from "lucide-react";
 
 const ResetPasswordHeader = () => {
   return (
@@ -11,13 +11,16 @@ const ResetPasswordHeader = () => {
         <Mail className="h-6 w-6" />
       </div>
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">Forgot your password?</h1>
+        <h1 className="text-xl font-semibold tracking-tight">
+          Forgot your password?
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a link to reset your
+          password.
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export  default ResetPasswordHeader
+export default ResetPasswordHeader;

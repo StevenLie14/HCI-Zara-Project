@@ -1,5 +1,5 @@
-import {User2} from "lucide-react";
 import BackButton from "@/components/back-button.tsx";
+import { User2 } from "lucide-react";
 
 const LoginHeader = () => {
   return (
@@ -17,7 +17,7 @@ const LoginHeader = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LoginHeader;

@@ -1,24 +1,26 @@
-import axios, {type AxiosInstance, type AxiosResponse} from "axios";
-import {getProjectEnvVariables} from "src/utils/env.ts";
+import axios, { type AxiosInstance, type AxiosResponse } from "axios";
+import { getProjectEnvVariables } from "src/utils/env.ts";
 
 export abstract class BaseService {
-  private static axiosInstance : AxiosInstance
+  private static axiosInstance: AxiosInstance;
 
-  protected static axios = () : AxiosInstance => {
+  protected static axios = (): AxiosInstance => {
     if (BaseService.axiosInstance == null) {
       BaseService.axiosInstance = axios.create({
-        baseURL : getProjectEnvVariables().VITE_BACKEND_URL,
-        headers : {
-          "Content-Type" : "application/json",
+        baseURL: getProjectEnvVariables().VITE_BACKEND_URL,
+        headers: {
+          "Content-Type": "application/json",
         },
         withCredentials: true,
-      })
-
+      });
     }
-    return BaseService.axiosInstance
-  }
+    return BaseService.axiosInstance;
+  };
 
-  private static request = async<T> (callback : () => Promise<AxiosResponse<T>>, fallback: string) : Promise<T> => {
+  private static request = async <T>(
+    callback: () => Promise<AxiosResponse<T>>,
+    fallback: string,
+  ): Promise<T> => {
     try {
       const response = await callback();
       return response.data;
@@ -29,25 +31,46 @@ export abstract class BaseService {
       }
       throw new Error("An unexpected error occurred.");
     }
-  }
+  };
 
-  protected static get = async<T> (url : string, fallback : string) : Promise<T> => {
+  protected static get = async <T>(
+    url: string,
+    fallback: string,
+  ): Promise<T> => {
     return this.request(() => BaseService.axios().get<T>(url), fallback);
-  }
+  };
 
-  protected static post = async<T> (url : string, fallback : string, data? : unknown) : Promise<T> => {
+  protected static post = async <T>(
+    url: string,
+    fallback: string,
+    data?: unknown,
+  ): Promise<T> => {
     return this.request(() => BaseService.axios().post<T>(url, data), fallback);
-  }
+  };
 
-  protected static put = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
+  protected static put = async <T>(
+    url: string,
+    data: unknown,
+    fallback: string,
+  ): Promise<T> => {
     return this.request(() => BaseService.axios().put<T>(url, data), fallback);
-  }
+  };
 
-  protected static delete = async<T> (url : string, fallback : string) : Promise<T> => {
+  protected static delete = async <T>(
+    url: string,
+    fallback: string,
+  ): Promise<T> => {
     return this.request(() => BaseService.axios().delete<T>(url), fallback);
-  }
+  };
 
-  protected static patch = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
-    return this.request(() => BaseService.axios().patch<T>(url, data), fallback);
-  }
+  protected static patch = async <T>(
+    url: string,
+    data: unknown,
+    fallback: string,
+  ): Promise<T> => {
+    return this.request(
+      () => BaseService.axios().patch<T>(url, data),
+      fallback,
+    );
+  };
 }

@@ -1,29 +1,27 @@
-"use client"
+"use client";
 
-import { Link } from "react-router-dom"
-import { Search, ShoppingBag, User, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { MobileNav } from "@/components/mobile-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { MobileNav } from "@/components/mobile-nav"
-import {useAuth} from "@/context/auth-context.tsx";
-
-
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/context/auth-context.tsx";
+import { ChevronDown, Search, ShoppingBag, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
- const { isAuthenticated, me, logout } = useAuth()
+  const { isAuthenticated, me, logout } = useAuth();
 
   const handleLogout = () => {
-    logout.mutate()
-  }
+    logout.mutate();
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background">
@@ -43,16 +41,28 @@ const Navbar = () => {
                 </button>
                 <div className="absolute left-0 top-full z-10 mt-2 hidden w-48 rounded-md border bg-background shadow-lg group-hover:block">
                   <div className="p-2">
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       New In
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Clothing
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Shoes
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Accessories
                     </Link>
                   </div>
@@ -64,16 +74,28 @@ const Navbar = () => {
                 </button>
                 <div className="absolute left-0 top-full z-10 mt-2 hidden w-48 rounded-md border bg-background shadow-lg group-hover:block">
                   <div className="p-2">
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       New In
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Clothing
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Shoes
                     </Link>
-                    <Link to="#" className="block rounded-md px-3 py-2 hover:bg-accent">
+                    <Link
+                      to="#"
+                      className="block rounded-md px-3 py-2 hover:bg-accent"
+                    >
                       Accessories
                     </Link>
                   </div>
@@ -115,20 +137,32 @@ const Navbar = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={me?.profilePicture || "/placeholder.svg?height=32&width=32"}
+                        src={
+                          me?.profilePicture ||
+                          "/placeholder.svg?height=32&width=32"
+                        }
                         alt={me?.name || "User"}
                       />
-                      <AvatarFallback>{me?.name?.charAt(0) || "U"}</AvatarFallback>
+                      <AvatarFallback>
+                        {me?.name?.charAt(0) || "U"}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <div className="flex flex-col space-y-1 p-2">
-                    <p className="text-sm font-medium leading-none">{me?.name || "User"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{me?.email || "user@example.com"}</p>
+                    <p className="text-sm font-medium leading-none">
+                      {me?.name || "User"}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {me?.email || "user@example.com"}
+                    </p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -141,7 +175,9 @@ const Navbar = () => {
                     <Link to="/wishlist">Wishlist</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
@@ -154,7 +190,10 @@ const Navbar = () => {
                 </span>
               </Button>
               <Button variant={"ghost"}>
-                <Link to="/login" className="hidden md:flex items-center gap-1 font-medium">
+                <Link
+                  to="/login"
+                  className="hidden md:flex items-center gap-1 font-medium"
+                >
                   <User className="h-5 w-5" />
                   <span>Login</span>
                 </Link>
@@ -162,13 +201,12 @@ const Navbar = () => {
                   <User className="h-5 w-5" />
                 </Link>
               </Button>
-
             </>
           )}
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
