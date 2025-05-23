@@ -33,20 +33,26 @@ public class AuthService {
     private final UserRepository userRepository;
     private final EmailService emailService;
 
-    public AuthDto login(LoginRequest request) {
+    private AuthDto authenticateUser(String email, String password) {
         var authObject = new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
+                email,
+                password
         );
         authenticationManager.authenticate(
                 authObject
         );
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        var user = userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("User not found with email: " + email)
+        );
         var jwtToken = jwtService.generateToken(user);
         return new AuthDto(jwtToken,userMapper.toDto(user));
     }
 
-    public UserDto register(RegisterUserRequest request) {
+    public AuthDto login(LoginRequest request) {
+        return authenticateUser(request.getEmail(), request.getPassword());
+    }
+
+    public AuthDto register(RegisterUserRequest request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
 
         if (optionalUser.isEmpty()) {
@@ -70,8 +76,8 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         user.setName(request.getName());
-
-        return userMapper.toDto(userRepository.save(user));
+        userRepository.save(user);
+        return authenticateUser(request.getEmail(), request.getPassword());
     }
 
     public User getCurrentUser() {

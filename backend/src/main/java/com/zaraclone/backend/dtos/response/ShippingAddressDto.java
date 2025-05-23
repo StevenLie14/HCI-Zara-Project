@@ -1,25 +1,20 @@
 package com.zaraclone.backend.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.zaraclone.backend.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
 @AllArgsConstructor
 @Getter
-public class UserDto {
+public class ShippingAddressDto {
     private String id;
-    private String name;
-    private String email;
-    private String gender;
-    private String phone;
-    private Timestamp verificationDate;
-    private Date birthDate;
-    private String profilePicture;
-    private Role role;
+    private String userId;
+    private String address;
+    private String city;
+    private String state;
+    private String country;
+    private String postalCode;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -33,11 +33,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String phone;
-    private String address;
-    private String city;
-    private String province;
-    private String country;
-    private String postalCode;
     private String profilePicture;
     private Date birthDate;
     private String gender;
@@ -56,6 +51,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShippingAddress> shippingAddresses;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

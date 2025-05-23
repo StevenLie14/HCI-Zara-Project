@@ -30,13 +30,8 @@ public class AuthController {
     private final AuthService authService;
     private final UserMapper userMapper;
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthDto> login(
-            @RequestBody LoginRequest request,
-            HttpServletResponse response
-    ) {
-        var resp = authService.login(request);
-        ResponseCookie cookie = ResponseCookie.from(cookieName, resp.getToken())
+    private void setCookie(HttpServletResponse response, String token) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, token)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
@@ -45,14 +40,38 @@ public class AuthController {
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthDto> login(
+            @RequestBody LoginRequest request,
+            HttpServletResponse response
+    ) {
+        AuthDto resp = authService.login(request);
+        setCookie(response, resp.getToken());
 
         return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request) {
-        UserDto dto = authService.register(request);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<AuthDto> createUser(@RequestBody RegisterUserRequest request, HttpServletResponse response) {
+        AuthDto resp = authService.register(request);
+        setCookie(response, resp.getToken());
+        return ResponseEntity.ok(resp);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite(SameSiteCookies.LAX.toString())
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
