@@ -75,8 +75,6 @@ export function AuthProvider({ children }: AuthProps) {
     },
   });
 
-  console.log("User", user);
-
   const register = useMutation({
     mutationFn: AuthService.register,
     onSuccess: () => {

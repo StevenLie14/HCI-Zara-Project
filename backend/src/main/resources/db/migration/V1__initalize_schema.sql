@@ -16,6 +16,7 @@ CREATE TABLE users (
 CREATE TABLE shipping_addresses (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
+    name VARCHAR(255),
     address TEXT,
     city VARCHAR(100),
     province VARCHAR(100),

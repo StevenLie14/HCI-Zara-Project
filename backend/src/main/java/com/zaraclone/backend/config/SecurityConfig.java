@@ -35,6 +35,7 @@ public class SecurityConfig {
     {
             "/api/v1/carts/**",
             "/api/v1/transactions/**",
+            "/api/v1/address/**",
     };
     public static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
             HttpMethod.GET, List.of("/api/v1/auth", "/api/v1/users", "/api/v1/users/**"),

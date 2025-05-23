@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class CreateOrUpdateShippingAddressRequest {
-    private String id;
+    private String name;
     private String address;
     private String city;
-    private String state;
+    private String province;
     private String country;
     private String postalCode;
 }

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {useMutation} from "@tanstack/react-query";
 import {UserService} from "@/services/user-service.ts";
 import {ToastService} from "@/utils/toast.ts";
+import {format} from "date-fns";
 
 const ProfileForm = () => {
   const { me, getMe } = useAuth();
@@ -24,7 +25,7 @@ const ProfileForm = () => {
       email: me?.email,
       phone: me?.phone || undefined,
       gender: me?.gender || undefined,
-      birthDate: me?.birthDate?.toString() || undefined,
+      birthDate: me?.birthDate || undefined,
       verificationDate: me?.verificationDate?.toString(),
     },
   })
@@ -96,7 +97,7 @@ const ProfileForm = () => {
             render={({ field }) => (
               <FormItem className={"w-full"}>
                 <FormLabel>Gender</FormLabel>
-                <Select  onValueChange={field.onChange}>
+                <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className={"w-full"}>
                       <SelectValue placeholder="Select gender"/>
@@ -120,7 +121,7 @@ const ProfileForm = () => {
               <FormItem>
                 <FormLabel>Date of Birth</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input {...field} value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""} type="date"  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -128,12 +129,12 @@ const ProfileForm = () => {
           />
           <FormField
             control={profileForm.control}
-            name="birthDate"
+            name="verificationDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Member Since</FormLabel>
                 <FormControl>
-                  <Input disabled={true} type="date" {...field} />
+                  <Input disabled={true} type="date" {...field} value={field.value ? format(new Date(field.value), "yyyy-MM-dd") : ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

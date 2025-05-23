@@ -51,8 +51,8 @@ export abstract class BaseService {
 
   protected static put = async <T>(
     url: string,
-    data: unknown,
     fallback: string,
+    data?: unknown,
     headers?: AxiosHeaders,
   ): Promise<T> => {
     return this.request(() => BaseService.axios().put<T>(url, data, {headers: headers}), fallback);
@@ -67,8 +67,8 @@ export abstract class BaseService {
 
   protected static patch = async <T>(
     url: string,
-    data: unknown,
     fallback: string,
+    data?: unknown,
     headers?: AxiosHeaders,
   ): Promise<T> => {
     return this.request(
