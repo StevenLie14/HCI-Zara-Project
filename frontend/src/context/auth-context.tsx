@@ -43,6 +43,8 @@ export function AuthProvider({ children }: AuthProps) {
     mutationFn: AuthService.logout,
     onSuccess: () => {
       ToastService.success("Logout successful");
+      setUser(null);
+      setIsAuthenticated(false);
       navigate("/login")
     },
     onError: (error) => {
@@ -53,14 +55,17 @@ export function AuthProvider({ children }: AuthProps) {
   const getCurrentUser = useMutation({
     mutationFn: AuthService.me,
     onSuccess: (resp) => {
-      setUser(resp.user);
+      setUser(resp);
       setIsAuthenticated(true);
     },
     onError: () => {
       setUser(null);
       setIsAuthenticated(false);
+      console.log("User not authenticated")
     },
   })
+
+  console.log("User", user)
 
   const register = useMutation({
     mutationFn: AuthService.register,
@@ -77,7 +82,7 @@ export function AuthProvider({ children }: AuthProps) {
 
   useEffect(() => {
     getCurrentUser.mutate();
-  }, []);
+  }, [register.status, login.status, logout.status]);
 
   return (
     <AuthContext.Provider

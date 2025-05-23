@@ -92,7 +92,7 @@ const LoginForm = () => {
                 Forgot password?
               </Link>
             </div>
-            <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-700">
+            <Button type="submit" className="w-full" disabled={login.isPending}>
               {login.isPending ? "Logging in..." : "Login"}
             </Button>
             <div className="text-center text-sm">

@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
@@ -21,7 +19,6 @@ const LoadingScreen = ({
                                 className,
                                 logo = true,
                                 spinnerSize = 40,
-                                spinnerColor = "black",
                               }: LoadingScreenProps) => {
   const [dots, setDots] = useState(".")
 
@@ -43,7 +40,7 @@ const LoadingScreen = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center bg-white",
+        "flex flex-col items-center justify-center",
         fullScreen ? "fixed inset-0 z-50" : "w-full h-full min-h-[200px]",
         className,
       )}
@@ -54,9 +51,9 @@ const LoadingScreen = ({
             <h1 className="text-3xl font-bold uppercase tracking-widest">ZARA</h1>
           </div>
         )}
-        <Loader2 className="animate-spin" size={spinnerSize} color={spinnerColor} />
+        <Loader2 className="animate-spin" size={spinnerSize} />
         {text && (
-          <p className="text-sm font-medium text-gray-600 mt-4">
+          <p className="text-sm font-medium mt-4">
             {text}
             <span className="inline-block w-6">{dots}</span>
           </p>

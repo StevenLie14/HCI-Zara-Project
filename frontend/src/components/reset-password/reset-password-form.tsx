@@ -137,7 +137,7 @@ const ResetPasswordForm = () => {
             </FormItem>
           )}
         />
-        <Button disabled={resetPasswordMutation.isPending || otpMutation.isPending} type="submit" className="w-full bg-gray-900 hover:bg-gray-800">
+        <Button disabled={resetPasswordMutation.isPending || otpMutation.isPending} type="submit" className="w-full">
           {resetPasswordMutation.isPending ? "Resetting Password..." : "Reset Password"}
         </Button>
         <div className="text-center text-sm">

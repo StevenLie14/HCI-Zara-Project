@@ -14,8 +14,14 @@ const ProtectedRoute = ({role} : IProps) => {
     return <LoadingScreen text='Navigating you' />;
   }
 
-  if (!isAuthenticated || !me || me.role !== role) {
-    return <Navigate to="/" replace state={{ error: 'You are not authorized to access this page.' }}/>;
+  console.log(isAuthenticated)
+  console.log(me)
+  if (!isAuthenticated || !me) {
+    return <Navigate to="/login" replace state={{ error: 'You need to login first.' }}/>
+  }
+
+  if (me.role !== role) {
+    return <Navigate to="/" replace state={{ error: 'You are not authorized to access this page.' }}/>
   }
 
   return <Outlet />

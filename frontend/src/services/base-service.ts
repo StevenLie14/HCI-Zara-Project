@@ -35,7 +35,7 @@ export abstract class BaseService {
     return this.request(() => BaseService.axios().get<T>(url), fallback);
   }
 
-  protected static post = async<T> (url : string, data : unknown, fallback : string) : Promise<T> => {
+  protected static post = async<T> (url : string, fallback : string, data? : unknown) : Promise<T> => {
     return this.request(() => BaseService.axios().post<T>(url, data), fallback);
   }
 

@@ -2,6 +2,7 @@ import {Outlet, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {ToastService} from "@/utils/toast.ts";
 import {AuthProvider} from "@/context/auth-context.tsx";
+import {ThemeProvider} from "@/context/theme-context.tsx";
 
 const Layout = () => {
   const location = useLocation();
@@ -17,7 +18,9 @@ const Layout = () => {
   }, [location.state]);
   return (
     <AuthProvider>
-          <Outlet />
+      <ThemeProvider defaultTheme={"system"} storageKey={"vite-ui-theme"}>
+        <Outlet />
+      </ThemeProvider>
     </AuthProvider>
   );
 }

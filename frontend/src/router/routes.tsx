@@ -12,7 +12,6 @@ import ResetPasswordPage from "@/pages/public/reset-password-page.tsx";
 export const routes = createBrowserRouter(
   [
     {
-      path: '/',
       element: <Layout />,
       children: [
         {
