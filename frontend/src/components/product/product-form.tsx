@@ -11,28 +11,32 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Separator } from "@/components/ui/separator"
-import {type ChangeEvent, useState} from "react";
+import {type ChangeEvent, useEffect, useState} from "react";
 import {ProductService} from "@/services/product-service.ts";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, type UseMutationResult} from "@tanstack/react-query";
 import {ToastService} from "@/utils/toast.ts";
 import {changeImageName} from "@/utils/utils.ts";
+import type {ProductResponse} from "@/models/dto/response/product-response.ts";
+import type {Nullable} from "@/models/types/utils";
+import {getProjectEnvVariables} from "@/utils/env.ts";
 
 interface IProps {
   open: boolean
   onClose: () => void
-  // getProducts: UseMutationResult<AddressResponse[], Error, void>
+  getProducts: UseMutationResult<ProductResponse[], Error, void>,
+  selectedProduct?: Nullable<ProductResponse>
 }
-const ProductForm = ({open, onClose} : IProps) => {
+const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [variantImagePreviews, setVariantImagePreviews] = useState<string[]>([])
 
   const form = useForm<CreateProductRequest>({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      categoryId: "",
-      variants: [
+      name: selectedProduct ? selectedProduct.name : "",
+      description: selectedProduct ? selectedProduct.description : "",
+      categoryId: selectedProduct ? selectedProduct.category.id : "",
+      variants: selectedProduct ? selectedProduct.productVariants : [
         {
           size: "",
           color: "",
@@ -41,7 +45,7 @@ const ProductForm = ({open, onClose} : IProps) => {
           stock: 0,
         },
       ],
-      images: [
+      images: selectedProduct ? selectedProduct.productImages :  [
         {
           productImage: "",
         },
@@ -49,6 +53,27 @@ const ProductForm = ({open, onClose} : IProps) => {
     },
   })
 
+  useEffect(() => {
+    if (selectedProduct) {
+      form.reset({
+        name: selectedProduct.name,
+        description: selectedProduct.description,
+        categoryId: selectedProduct.category.id,
+        variants: selectedProduct.productVariants,
+        images: selectedProduct.productImages,
+      });
+      selectedProduct.productImages.forEach((image, index) => {
+        setImagePreviews(prev => ({...prev, [index]: `${getProjectEnvVariables().VITE_MINIO_URL}${image.productImage}` }));
+      });
+
+      selectedProduct.productVariants.forEach((variant, index) => {
+        setVariantImagePreviews(prev => ({...prev, [index]: `${getProjectEnvVariables().VITE_MINIO_URL}${variant.variantImage}` }));
+      });
+
+    }
+  }, [selectedProduct]);
+
+  console.log("Form default values:", form.getValues());
   const {
     fields: variantFields,
     append: appendVariant,
@@ -110,6 +135,7 @@ const ProductForm = ({open, onClose} : IProps) => {
     onSuccess: () => {
       ToastService.success("Product created successfully!")
       form.reset()
+      getProducts.mutate()
       onClose()
     },
     onError: (error) => {
@@ -413,10 +439,12 @@ const ProductForm = ({open, onClose} : IProps) => {
             <Separator />
 
             <div className="flex justify-end space-x-4">
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button disabled={productMutation.isPending} type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Add Product</Button>
+              <Button disabled={productMutation.isPending} type="submit">
+                {productMutation.isPending ? "Creating..." : "Create Product"}
+              </Button>
             </div>
           </form>
         </Form>
