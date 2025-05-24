@@ -2,6 +2,7 @@ package com.zaraclone.backend.controllers;
 
 
 import com.zaraclone.backend.dtos.request.CreateProductRequest;
+import com.zaraclone.backend.dtos.request.UpdateProductRequest;
 import com.zaraclone.backend.dtos.response.ProductDto;
 import com.zaraclone.backend.services.ProductService;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,6 +44,23 @@ public class ProductController {
             @RequestPart("productImages") List<MultipartFile> productImages
     ) {
         var product = productService.createProduct(productRequest, variantImages, productImages);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product.getId());
+    }
+
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateProduct(
+
+            @RequestPart("product") UpdateProductRequest productRequest,
+            @RequestPart(name = "variantImages",required = false) List<MultipartFile> variantImages,
+            @RequestPart(name = "productImages",required = false) List<MultipartFile> productImages
+    ) {
+        if (variantImages == null) {
+            variantImages = new ArrayList<>();
+        }
+        if (productImages == null) {
+            productImages = new ArrayList<>();
+        }
+        var product = productService.updateProduct(productRequest, variantImages, productImages);
         return ResponseEntity.status(HttpStatus.CREATED).body(product.getId());
     }
 

@@ -1,5 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import ProfileNav from "@/components/nav/profile-nav.tsx";
+import {ThemeToggle} from "@/components/theme-toggle.tsx";
 
 
 export function DashboardHeader() {
@@ -21,7 +22,10 @@ export function DashboardHeader() {
             {/*</nav>*/}
           </div>
         </div>
-        <ProfileNav showCart={false} />
+        <div className={`flex items-center space-x-4`}>
+          <ThemeToggle />
+          <ProfileNav showCart={false} />
+        </div>
       </div>
     </header>
   )

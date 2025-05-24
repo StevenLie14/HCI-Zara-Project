@@ -33,6 +33,11 @@ const ProductPage = () => {
     productMutation.mutate()
   },[])
 
+  const showModal = () => {
+    setSelectedProduct(null)
+    setShowAddProduct(true)
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -40,7 +45,7 @@ const ProductPage = () => {
           <CardTitle className="flex items-center justify-between">
             Product Management
             <Button
-              onClick={() => setShowAddProduct(true)}
+              onClick={showModal}
             >
               Add Product
             </Button>

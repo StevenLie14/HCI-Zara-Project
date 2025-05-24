@@ -1,5 +1,6 @@
 package com.zaraclone.backend.mappers;
 
+import com.zaraclone.backend.dtos.request.UpdateProductVariantRequest;
 import com.zaraclone.backend.dtos.response.ProductVariantDto;
 import com.zaraclone.backend.entities.ProductVariant;
 import org.mapstruct.*;
@@ -11,4 +12,8 @@ public interface ProductVariantMapper {
             @Mapping(source = "product.id", target = "productId")
     })
     ProductVariantDto toDto(ProductVariant product);
+
+//    ProductVariant toEntity(UpdateProductVariantRequest productVariantDto);
+
+
 }

@@ -28,10 +28,7 @@ export const routes = createBrowserRouter([
                 path: "*",
                 element: <HomePage />,
               },
-              {
-                path: "/reset-password",
-                element: <ResetPasswordPage />,
-              },
+
             ],
           },
           {
@@ -89,6 +86,10 @@ export const routes = createBrowserRouter([
               {
                 path: "/register",
                 element: <RegisterPage />,
+              },
+              {
+                path: "/reset-password",
+                element: <ResetPasswordPage />,
               },
             ],
           },

@@ -19,6 +19,8 @@ import {changeImageName} from "@/utils/utils.ts";
 import type {ProductResponse} from "@/models/dto/response/product-response.ts";
 import type {Nullable} from "@/models/types/utils";
 import {getProjectEnvVariables} from "@/utils/env.ts";
+import type {CategoryResponse} from "@/models/dto/response/category-response.ts";
+import {CategoryService} from "@/services/category-service.ts";
 
 interface IProps {
   open: boolean
@@ -29,33 +31,32 @@ interface IProps {
 const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [variantImagePreviews, setVariantImagePreviews] = useState<string[]>([])
+  const [categories, setCategories] = useState<CategoryResponse[]>([])
 
-  const form = useForm<CreateProductRequest>({
-    resolver: zodResolver(createProductSchema),
-    defaultValues: {
-      name: selectedProduct ? selectedProduct.name : "",
-      description: selectedProduct ? selectedProduct.description : "",
-      categoryId: selectedProduct ? selectedProduct.category.id : "",
-      variants: selectedProduct ? selectedProduct.productVariants : [
-        {
-          size: "",
-          color: "",
-          variantImage: "",
-          price: 0,
-          stock: 0,
-        },
-      ],
-      images: selectedProduct ? selectedProduct.productImages :  [
-        {
-          productImage: "",
-        },
-      ],
+  const fetchCategories = useMutation({
+    mutationFn: CategoryService.getAllCategories,
+    onSuccess: (data) => {
+      setCategories(data)
+    },
+    onError: (error) => {
+      ToastService.error(error.message || "Failed to fetch categories. Please try again.")
     },
   })
 
+  const form = useForm<CreateProductRequest>({
+    resolver: zodResolver(createProductSchema),
+  })
+
   useEffect(() => {
+    fetchCategories.mutate()
+  }, [])
+
+  useEffect(() => {
+    setImagePreviews([])
+    setVariantImagePreviews([])
     if (selectedProduct) {
       form.reset({
+        id: selectedProduct.id,
         name: selectedProduct.name,
         description: selectedProduct.description,
         categoryId: selectedProduct.category.id,
@@ -69,11 +70,31 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
       selectedProduct.productVariants.forEach((variant, index) => {
         setVariantImagePreviews(prev => ({...prev, [index]: `${getProjectEnvVariables().VITE_MINIO_URL}${variant.variantImage}` }));
       });
-
+      return
     }
-  }, [selectedProduct]);
+    form.reset({
+      id: undefined,
+      name: "",
+      description: "",
+      categoryId: "",
+      variants: [
+        {
+          size: "",
+          color: "",
+          variantImage: "",
+          price: 0,
+          stock: 0,
+        },
+      ],
+      images: [
+        {
+          productImage: "",
+        },
+      ],
+    })
 
-  console.log("Form default values:", form.getValues());
+  }, [selectedProduct, open]);
+
   const {
     fields: variantFields,
     append: appendVariant,
@@ -95,7 +116,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     if (e.target.files && e.target.files[0]) {
       const file = changeImageName(e.target.files[0]);
-      form.setValue(`images.${index}`, {productImage: file.name, imageFile: file});
+      form.setValue(`images.${index}`, {id: undefined,productImage: file.name, imageFile: file});
       const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === "string") {
@@ -114,6 +135,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
       const file = changeImageName(event.target.files[0]);
       form.setValue(`variants.${index}`, {
         ...form.getValues(`variants.${index}`),
+        id: undefined,
         variantImage: file.name,
         imageFile: file,
       });
@@ -130,11 +152,13 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
     }
   }
 
-  const productMutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: ProductService.createProduct,
     onSuccess: () => {
       ToastService.success("Product created successfully!")
       form.reset()
+      setImagePreviews([])
+      setVariantImagePreviews([])
       getProducts.mutate()
       onClose()
     },
@@ -143,17 +167,34 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
     },
   })
 
+  const updateMutation = useMutation({
+    mutationFn: ProductService.updateProduct,
+    onSuccess: () => {
+      ToastService.success("Product updated successfully!")
+      form.reset()
+      setImagePreviews([])
+      setVariantImagePreviews([])
+      getProducts.mutate()
+      onClose()
+    },
+    onError: (error) => {
+      ToastService.error(error.message || "Failed to update product. Please try again.")
+    },
+  })
+
 
 
   const handleSubmit = async (data : CreateProductRequest) => {
-    productMutation.mutate(data)
+    selectedProduct ? updateMutation.mutate(data) : addMutation.mutate(data)
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="!w-[100vw] !max-w-[75vw] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
+          <DialogTitle>
+            {selectedProduct ? "Update Product" : "Add New Product"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -189,10 +230,9 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="women">Women</SelectItem>
-                            <SelectItem value="men">Men</SelectItem>
-                            <SelectItem value="kids">Kids</SelectItem>
-                            <SelectItem value="accessories">Accessories</SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem value={category.id}>{category.name}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -234,7 +274,9 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-sm">Image {index + 1}</CardTitle>
                           {imageFields.length > 1 && (
-                            <Button type="button" variant="ghost" size="sm" onClick={() => removeImage(index)}>
+                            <Button type="button" variant="ghost" size="sm" onClick={() => {
+                                removeImage(index)
+                            }}>
                               <X className="w-4 h-4" />
                             </Button>
                           )}
@@ -247,7 +289,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                               <img
                                 src={imagePreviews[index] || "/placeholder.svg"}
                                 alt={`Product preview ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg border"
+                                className="w-full min-h-20 h-full object-fit rounded-lg border"
                               />
                               <Button
                                 type="button"
@@ -260,7 +302,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                                     delete newState[index];
                                     return newState;
                                   });
-                                  removeImage(index)
+                                  form.setValue(`images.${index}`, {id: undefined, productImage: "", imageFile: undefined });
                                 }}
                                 >
                                 <X className="w-4 h-4" />
@@ -279,6 +321,10 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                             <Label htmlFor={`image-${index}`} className="cursor-pointer flex items-center justify-center flex-col">
                               <Upload className="w-8 h-8 text-muted-foreground" />
                               <p className="text-sm text-muted-foreground">Click to upload image</p>
+                              {form.formState.errors.images?.[index]?.productImage?.message && (
+                                <p className="text-red-500">{form.formState.errors.images[index].productImage.message}</p>
+                              )}
+
                             </Label>
                           </div>
                         )}
@@ -313,7 +359,18 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-sm">Variant {index + 1}</CardTitle>
                           {variantFields.length > 1 && (
-                            <Button type="button" variant="ghost" size="sm" onClick={() => removeVariant(index)}>
+                            <Button type="button" variant="ghost" size="sm" onClick={() => {
+
+                              console.log(index)
+                              if (index >= variantImagePreviews.length){
+                                setVariantImagePreviews((prev: string[]) => {
+                                  const newPreviews = [...prev];
+                                  newPreviews.splice(index, 1);
+                                  return newPreviews;
+                                });
+                              }
+                              removeVariant(index);
+                            }}>
                               <X className="w-4 h-4" />
                             </Button>
                           )}
@@ -405,7 +462,11 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                                       delete newState[index];
                                       return newState;
                                     });
-                                    removeImage(index)
+                                    form.setValue(`variants.${index}`, {
+                                      ...form.getValues(`variants.${index}`),
+                                      variantImage: "",
+                                      imageFile: undefined,
+                                    });
                                   }}
                                 >
                                   <X className="w-4 h-4" />
@@ -425,6 +486,9 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                               <Label htmlFor={`variant-image-${index}`} className="cursor-pointer flex items-center justify-center flex-col">
                                 <Upload className="w-6 h-6 text-muted-foreground" />
                                 <p className="text-sm text-muted-foreground">Upload variant image</p>
+                                {form.formState.errors.variants?.[index]?.variantImage?.message && (
+                                  <p className="text-red-500">{form.formState.errors.variants[index].variantImage.message}</p>
+                                )}
                               </Label>
                             </div>
                           )}
@@ -439,11 +503,14 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
             <Separator />
 
             <div className="flex justify-end space-x-4">
-              <Button disabled={productMutation.isPending} type="button" variant="outline" onClick={onClose}>
+              <Button disabled={addMutation.isPending || updateMutation.isPending} type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button disabled={productMutation.isPending} type="submit">
-                {productMutation.isPending ? "Creating..." : "Create Product"}
+              <Button disabled={addMutation.isPending || updateMutation.isPending} type="submit">
+                {
+                  selectedProduct ? updateMutation.isPending ? "Updating..." : "Update Product" :
+                    addMutation.isPending ? "Creating..." : "Create Product"
+                }
               </Button>
             </div>
           </form>

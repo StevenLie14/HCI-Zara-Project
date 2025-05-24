@@ -1,5 +1,6 @@
 package com.zaraclone.backend.mappers;
 
+import com.zaraclone.backend.dtos.request.UpdateProductImageRequest;
 import com.zaraclone.backend.dtos.response.ProductImageDto;
 import com.zaraclone.backend.entities.ProductImage;
 import org.mapstruct.Mapper;
@@ -13,4 +14,6 @@ public interface ProductImageMapper {
             @Mapping(source = "product.id", target = "productId")
     })
     ProductImageDto toDto(ProductImage product);
+
+//    ProductImage toEntity(UpdateProductImageRequest request);
 }

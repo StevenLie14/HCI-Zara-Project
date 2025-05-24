@@ -24,7 +24,7 @@ const AdminSidebar = () => {
       id: "produk",
       label: "Produk",
       icon: Package,
-      link: "/admin/produk",
+      link: "/admin/products",
     },
   ]
 
