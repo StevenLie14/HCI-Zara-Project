@@ -14,10 +14,10 @@ public interface ProductMapper {
     @Mappings({
             @Mapping(target = "productImages", source = "productDto.images"),
             @Mapping(target = "productVariants", source = "productDto.variants"),
-            @Mapping(target = "category", source = "category"),
             @Mapping(target = "name", source = "productDto.name"),
+            @Mapping(target = "category", source = "productDto.categoryId")
     })
-    Product toEntity(CreateProductRequest productDto, Category category);
+    Product toEntity(CreateProductRequest productDto);
     @AfterMapping
     default void linkProductImages(@MappingTarget Product product) {
         if (product.getProductImages() != null) {

@@ -39,7 +39,7 @@ public class ProductService {
     public ProductDto createProduct(CreateProductRequest productRequest, List<MultipartFile> variantImages, List<MultipartFile> productImages) {
         var category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + productRequest.getCategoryId()));
-        var product = productMapper.toEntity(productRequest,category);
+        var product = productMapper.toEntity(productRequest);
 
 
         try {
