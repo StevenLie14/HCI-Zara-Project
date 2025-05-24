@@ -6,7 +6,6 @@ import {
 } from "@/models/dto/request/create-product.ts";
 import { ProductService } from "@/services/product-service.ts";
 import { getProjectEnvVariables } from "@/utils/env.ts";
-import { changeFileName } from "@/utils/utils.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -16,6 +15,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import {changeImageName} from "@/utils/utils.ts";
 
 export default function CreateProductPage() {
   const [variantPreviews, setVariantPreviews] = useState<
@@ -68,7 +68,7 @@ export default function CreateProductPage() {
     index: number,
   ) => {
     if (e.target.files && e.target.files[0]) {
-      const file = changeFileName(e.target.files[0]);
+      const file = changeImageName(e.target.files[0]);
       setValue(`variants.${index}`, {
         ...getValues(`variants.${index}`),
         variantImage: file.name,
@@ -98,7 +98,7 @@ export default function CreateProductPage() {
     index: number,
   ) => {
     if (e.target.files && e.target.files[0]) {
-      const file = changeFileName(e.target.files[0]);
+      const file = changeImageName(e.target.files[0]);
       setValue(`images.${index}`, { productImage: file.name, imageFile: file });
       const reader = new FileReader();
       reader.onload = () => {

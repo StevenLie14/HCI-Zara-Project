@@ -3,6 +3,7 @@ import { createProductVariantSchema } from "src/models/dto/request/create-produc
 import { z } from "zod";
 
 export const createProductSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, "Product Name is required"),
   description: z.string().min(1, "Product Description is required"),
   categoryId: z.string().min(1, "Category is required"),

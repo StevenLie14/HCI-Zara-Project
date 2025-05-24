@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const createProductVariantSchema = z.object({
+  id: z.string().optional(),
   size: z.string().min(1, "Size is required"),
   color: z.string().min(1, "Color is required"),
   variantImage: z.string().min(1, "Variant image is required"),

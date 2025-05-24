@@ -12,4 +12,11 @@ public interface CategoryMapper {
     CategoryDto toDto(Category category);
     Category toEntity(CreateCategoryRequest categoryDto);
     void update(UpdateCategoryRequest request, @MappingTarget Category category);
+
+    default Category fromId(String id) {
+        if (id == null) return null;
+        Category category = new Category();
+        category.setId(id);
+        return category;
+    }
 }

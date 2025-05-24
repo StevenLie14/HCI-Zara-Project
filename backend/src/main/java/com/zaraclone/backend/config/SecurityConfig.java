@@ -40,7 +40,7 @@ public class SecurityConfig {
     public static final Map<HttpMethod, List<String>> AUTH_RULES = Map.of(
             HttpMethod.GET, List.of("/api/v1/auth", "/api/v1/users", "/api/v1/users/**"),
             HttpMethod.POST, List.of("/api/v1/products", "/api/v1/category"),
-            HttpMethod.PUT, List.of("/api/v1/category/**","/api/v1/users/**"),
+            HttpMethod.PUT, List.of("/api/v1/products", "/api/v1/category/**","/api/v1/users/**"),
             HttpMethod.DELETE, List.of("/api/v1/products/**", "/api/v1/category/**"),
             HttpMethod.PATCH, List.of("/api/v1/users/**")
     );

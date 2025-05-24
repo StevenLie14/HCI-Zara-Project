@@ -1,7 +1,6 @@
 import {useAuth} from "@/context/auth-context.tsx";
 import {type ChangeEvent, useState} from "react";
 import {ToastService} from "@/utils/toast.ts";
-import {changeFileName} from "@/utils/utils.ts";
 import {UserService} from "@/services/user-service.ts";
 import {useMutation} from "@tanstack/react-query";
 import {Card, CardContent} from "@/components/ui/card.tsx";
@@ -10,6 +9,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {getProjectEnvVariables} from "@/utils/env.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Camera} from "lucide-react";
+import {changeImageName} from "@/utils/utils.ts";
 
 const ProfileAvatarCard = () => {
   const { me } = useAuth()
@@ -31,9 +31,9 @@ const ProfileAvatarCard = () => {
   const handleSaveProfile = async () => {
     if (imagePreview) {
       const formData = new FormData()
-      const file = changeFileName(imagePreview)
+      const file = changeImageName(imagePreview)
       formData.append("profilePicture", file)
-      return await UserService.updateProfile(formData)
+      return await UserService.updateProfilePicture(formData)
     }
   }
 

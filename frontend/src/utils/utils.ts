@@ -1,6 +1,10 @@
 import { v4 } from "uuid";
+import {ToastService} from "@/utils/toast.ts";
 
-export const changeFileName = (file: File): File => {
+export const changeImageName = (file: File): File => {
+  if (!file.name.includes(".jpg") && !file.name.includes(".jpeg") && !file.name.includes(".png")) {
+    ToastService.error("Invalid file type. Please upload a JPG, JPEG, or PNG image.");
+  }
   const extension = file.name.split(".").pop();
   const newFileName = `${v4()}.${extension}`;
 
