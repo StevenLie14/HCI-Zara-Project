@@ -20,6 +20,7 @@ public class ShippingAddress {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String address;
+    private String name;
     private String city;
     private String province;
     private String country;

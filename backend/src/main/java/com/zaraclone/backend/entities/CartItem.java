@@ -24,7 +24,7 @@ public class CartItem {
     @LastModifiedDate
     private Timestamp updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     @ToString.Exclude

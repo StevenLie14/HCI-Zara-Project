@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 interface AuthHeaderProps {
   showBackButton?: boolean;
-  title?: string;
 }
 
 const AuthNavbar = ({ showBackButton = true }: AuthHeaderProps) => {

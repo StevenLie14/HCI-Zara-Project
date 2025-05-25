@@ -6,8 +6,11 @@ import com.zaraclone.backend.dtos.request.UpdateUserRequest;
 import com.zaraclone.backend.dtos.response.UserDto;
 import com.zaraclone.backend.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @AllArgsConstructor
@@ -26,9 +29,17 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable String id, @RequestBody UpdateUserRequest request) {
-        return ResponseEntity.ok(userService.updateUser(id,request));
+    @PatchMapping(path = "/profile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateProfilePicture(
+            @RequestPart("profilePicture") MultipartFile file
+    ) {
+        userService.updateProfilePicture(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Profile picture updated successfully");
+    }
+
+    @PutMapping()
+    public ResponseEntity<UserDto> updateUser(@RequestBody UpdateUserRequest request) {
+        return ResponseEntity.ok(userService.updateUser(request));
     }
 
     @PatchMapping("/change-password")
