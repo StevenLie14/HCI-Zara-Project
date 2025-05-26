@@ -11,7 +11,10 @@ import { createBrowserRouter } from "react-router-dom";
 import ProfilePage from "@/pages/private/profile-page.tsx";
 import AuthLayout from "@/pages/auth-layout.tsx";
 import ContextProvider from "@/pages/context-provider.tsx";
-import ProductDetail from "@/pages/product/product-category";
+import ProductDetail from "@/pages/product/product-category.tsx";
+import AdminLayout from "@/pages/admin-layout.tsx";
+import DashboardPage from "@/pages/admin/dashboard-page.tsx";
+import ProductPage from "@/pages/admin/product-page.tsx";
 
 export const routes = createBrowserRouter([
   {
@@ -52,6 +55,29 @@ export const routes = createBrowserRouter([
         ],
       },
       {
+        element: <AdminLayout />,
+        path: "/admin",
+        children: [
+          {
+            element: <ProtectedRoute role={Role.ADMIN} />,
+            children: [
+              {
+                path: "/admin/create-product",
+                element: <CreateProductPage />,
+              },
+              {
+                path: "/admin/dashboard",
+                element: <DashboardPage />,
+              },
+              {
+                path: "/admin/products",
+                element: <ProductPage />,
+              },
+            ],
+          },
+        ],
+      },
+      {
         element: <AuthLayout />,
         children: [
           {
@@ -64,6 +90,10 @@ export const routes = createBrowserRouter([
               {
                 path: "/register",
                 element: <RegisterPage />,
+              },
+              {
+                path: "/reset-password",
+                element: <ResetPasswordPage />,
               },
             ],
           },
