@@ -14,6 +14,9 @@ import ContextProvider from "@/pages/context-provider.tsx";
 import AdminLayout from "@/pages/admin-layout.tsx";
 import DashboardPage from "@/pages/admin/dashboard-page.tsx";
 import ProductPage from "@/pages/admin/product-page.tsx";
+import ProductDetail from "@/pages/product/product-category";
+import { CartPage } from "@/pages/cart/cart-page";
+
 
 export const routes = createBrowserRouter([
   {
@@ -28,7 +31,14 @@ export const routes = createBrowserRouter([
                 path: "*",
                 element: <HomePage />,
               },
-
+              {
+                path: "/category/Woman",
+                element: <ProductDetail />,
+              },
+              {
+                path: "/cartTest",
+                element: <CartPage />,
+              },
             ],
           },
           {
@@ -42,34 +52,36 @@ export const routes = createBrowserRouter([
                 path: "/profile",
                 element: <ProfilePage />,
               },
+              {
+                path: "/cart",
+                element: <CartPage />,
+              },
             ],
           },
         ],
       },
       {
         element: <AdminLayout />,
-        path : "/admin",
+        path: "/admin",
         children: [
           {
             element: <ProtectedRoute role={Role.ADMIN} />,
             children: [
               {
-                path : "/admin/create-product",
+                path: "/admin/create-product",
                 element: <CreateProductPage />,
               },
               {
                 path: "/admin/dashboard",
-                element: <DashboardPage />
+                element: <DashboardPage />,
               },
               {
                 path: "/admin/products",
                 element: <ProductPage />,
-              }
-            ]
-
-          }
-        ]
-
+              },
+            ],
+          },
+        ],
       },
       {
         element: <AuthLayout />,

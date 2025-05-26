@@ -1,45 +1,52 @@
-import {useAuth} from "@/context/auth-context.tsx";
-import {ShoppingBag, User} from "lucide-react";
+import { useAuth } from "@/context/auth-context.tsx";
+import { ShoppingBag, User } from "lucide-react";
 import {
   DropdownMenu,
-  DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import {Link} from "react-router-dom";
+import { Button } from "@/components/ui/button.tsx";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar.tsx";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import ShoppingCartSection from "@/pages/cart/shooping-cart";
 
 interface IProps {
   showCart: boolean;
 }
-const ProfileNav = ({showCart} : IProps) => {
+const ProfileNav = ({ showCart }: IProps) => {
   const { isAuthenticated, me, logout } = useAuth();
+  const [isCartOpen, setCartIsOpen] = useState(false);
   const handleLogout = async () => {
-    logout.mutate()
+    logout.mutate();
   };
 
   return (
     <>
       {isAuthenticated ? (
         <>
-          {
-            showCart && (
-              <button className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    0
-                  </span>
-              </button>
-            )
+          {showCart && (
+            <button className="relative" onClick={() => setCartIsOpen(!isCartOpen)}>
+              <ShoppingBag className="h-5 w-5" />
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                0
+              </span>
+            </button>
+          )}
+
+          {isCartOpen &&
+            <ShoppingCartSection/>
           }
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative h-8 w-8 rounded-full"
-              >
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
                     src={
@@ -48,9 +55,7 @@ const ProfileNav = ({showCart} : IProps) => {
                     }
                     alt={me?.name || "User"}
                   />
-                  <AvatarFallback>
-                    {me?.name?.charAt(0) || "U"}
-                  </AvatarFallback>
+                  <AvatarFallback>{me?.name?.charAt(0) || "U"}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -85,8 +90,8 @@ const ProfileNav = ({showCart} : IProps) => {
           <Button variant={"ghost"} className="relative">
             <ShoppingBag className="h-5 w-5" />
             <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                  0
-                </span>
+              0
+            </span>
           </Button>
           <Button variant={"ghost"}>
             <Link
@@ -104,6 +109,6 @@ const ProfileNav = ({showCart} : IProps) => {
       )}
     </>
   );
-}
+};
 
 export default ProfileNav;

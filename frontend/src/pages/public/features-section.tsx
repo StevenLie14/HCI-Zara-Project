@@ -21,7 +21,7 @@ const categories = [
 
 const FeaturesSection = () => {
   return (
-    <section className="py-12 px-4 max-w-7xl mx-auto">
+    <section className="py-12 w-full mx-auto px-15">
       <h2 className="text-2xl font-bold text-center mb-8">
         Features Categories
       </h2>
@@ -34,7 +34,7 @@ const FeaturesSection = () => {
               className="w-full h-64 object-cover"
             />
             <div className="p-4">
-              <h3 className="text-lg font-semibold">{cat.title}</h3>
+              <h3 className="text-xl font-bold">{cat.title}</h3>
               <p className="text-sm  mb-4">{cat.description}</p>
               <a
                 href={`/category/${cat.title}`}
