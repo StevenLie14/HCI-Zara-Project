@@ -58,14 +58,13 @@ const products = [
 
 const FeaturedProducts = () => {
   return (
-    <section className="py-12 px-4 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-6">Featured Products</h2>
+    <section className="py-5 px-15 w-full mx-auto">
       <div className="overflow-x-auto">
         <div className="flex gap-6 snap-x snap-mandatory overflow-x-scroll pb-4 px-1">
           {products.map((item, idx) => (
             <div
               key={idx}
-              className="min-w-[200px] max-w-[200px] flex-shrink-0  rounded-xl shadow-md overflow-hidden snap-start"
+              className="min-w-[300px] max-w-[300px] flex-shrink-0  rounded-xl shadow-md overflow-hidden snap-start"
             >
               <img
                 src={item.image}

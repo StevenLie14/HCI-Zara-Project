@@ -7,9 +7,12 @@ export const HomePage = () => {
   return (
 
       <main className="flex-grow">
-        <HeroSection/>
-        <FeaturesSection/>
-        <FeaturedProducts/>
+        <HeroSection />
+        <FeaturesSection />
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Featured Products
+        </h2>
+        <FeaturedProducts />
       </main>
   );
 };
