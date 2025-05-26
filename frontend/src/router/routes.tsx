@@ -17,7 +17,7 @@ import ProductPage from "@/pages/admin/product-page.tsx";
 
 export const routes = createBrowserRouter([
   {
-    element : <ContextProvider/>,
+    element: <ContextProvider />,
     children: [
       {
         element: <Layout />,
@@ -41,12 +41,10 @@ export const routes = createBrowserRouter([
               {
                 path: "/profile",
                 element: <ProfilePage />,
-              }
+              },
             ],
           },
-
         ],
-
       },
       {
         element: <AdminLayout />,
@@ -93,9 +91,8 @@ export const routes = createBrowserRouter([
               },
             ],
           },
-        ]
-      }
-    ]
-  }
-
+        ],
+      },
+    ],
+  },
 ]);

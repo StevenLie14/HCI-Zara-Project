@@ -27,10 +27,7 @@ const FeaturesSection = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((cat, idx) => (
-          <div
-            key={idx}
-            className="rounded-xl overflow-hidden shadow-md "
-          >
+          <div key={idx} className="rounded-xl overflow-hidden shadow-md ">
             <img
               src={cat.image}
               alt={cat.title}
@@ -40,7 +37,7 @@ const FeaturesSection = () => {
               <h3 className="text-lg font-semibold">{cat.title}</h3>
               <p className="text-sm  mb-4">{cat.description}</p>
               <a
-                href="#"
+                href={`/category/${cat.title}`}
                 className="text-sm font-medium inline-flex items-center"
               >
                 Shop Now <span className="ml-1">→</span>
