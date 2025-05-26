@@ -11,10 +11,11 @@ import { createBrowserRouter } from "react-router-dom";
 import ProfilePage from "@/pages/private/profile-page.tsx";
 import AuthLayout from "@/pages/auth-layout.tsx";
 import ContextProvider from "@/pages/context-provider.tsx";
+import ProductDetail from "@/pages/product/product-category";
 
 export const routes = createBrowserRouter([
   {
-    element : <ContextProvider/>,
+    element: <ContextProvider />,
     children: [
       {
         element: <Layout />,
@@ -29,6 +30,10 @@ export const routes = createBrowserRouter([
                 path: "/reset-password",
                 element: <ResetPasswordPage />,
               },
+              {
+                path: "/category/Woman",
+                element: <ProductDetail />,
+              },
             ],
           },
           {
@@ -41,12 +46,10 @@ export const routes = createBrowserRouter([
               {
                 path: "/profile",
                 element: <ProfilePage />,
-              }
+              },
             ],
           },
-
         ],
-
       },
       {
         element: <AuthLayout />,
@@ -64,9 +67,8 @@ export const routes = createBrowserRouter([
               },
             ],
           },
-        ]
-      }
-    ]
-  }
-
+        ],
+      },
+    ],
+  },
 ]);
