@@ -5,7 +5,7 @@ import MainContentSection from "./main-content";
 import FooterSection from "@/components/footer";
 import SidebarSection from "./side-bar";
 
-function ProductDetail() {
+function ProductCategory() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* <Navbar /> */}
@@ -18,4 +18,4 @@ function ProductDetail() {
   );
 }
 
-export default ProductDetail;
+export default ProductCategory;
