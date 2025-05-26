@@ -4,7 +4,7 @@ import { Role } from "@/models/enum/role-enum.ts";
 import { Navigate, Outlet } from "react-router-dom";
 
 interface IProps {
-  role: Role;
+  role?: Role;
 }
 
 const ProtectedRoute = ({ role }: IProps) => {
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ role }: IProps) => {
     );
   }
 
-  if (me.role !== role) {
+  if (role && me.role !== role) {
     return (
       <Navigate
         to="/"
