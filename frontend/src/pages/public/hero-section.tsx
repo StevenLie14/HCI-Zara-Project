@@ -1,12 +1,10 @@
-import React from "react";
-
 const HeroSection = () => {
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="../../../assets/picture/Screenshot 2025-05-21 155452.png"
+          src="../../assets/picture/Screenshot 2025-05-21 155452.png"
           alt="Hero Background"
           className="w-full h-full object-cover object-center"
         />

@@ -32,12 +32,8 @@ export const routes = createBrowserRouter([
             ],
           },
           {
-            element: <ProtectedRoute role={Role.USER} />,
+            element: <ProtectedRoute />,
             children: [
-              {
-                path: "/create-product",
-                element: <CreateProductPage />,
-              },
               {
                 path: "/profile",
                 element: <ProfilePage />,
