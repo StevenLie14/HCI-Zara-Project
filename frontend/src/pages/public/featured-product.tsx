@@ -1,84 +1,36 @@
-const products = [
-  {
-    name: "Satin Slip Dress",
-    price: 189.99,
-    image: "/product-dress.jpg",
-  },
-  {
-    name: "Sunset Blaze",
-    price: 299.99,
-    image: "/product-blazer.jpg",
-  },
-  {
-    name: "Interlock T-Shirt",
-    price: 180,
-    image: "/product-shirt.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-  {
-    name: "Minimalist Bag",
-    price: 149.99,
-    image: "/product-bag.jpg",
-  },
-];
+import {Button} from "@/components/ui/button.tsx";
+import {Card} from "@/components/ui/card.tsx";
+import {mockProducts} from "@/models/constant/products.ts";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "@/context/auth-context.tsx";
+
+
 
 const FeaturedProducts = () => {
+  const navigate = useNavigate();
+  const {products} = useAuth()
   return (
-    <section className="py-5 px-15 w-full mx-auto">
+    <section className="py-5 w-full mx-auto">
       <div className="overflow-x-auto">
-        <div className="flex gap-6 snap-x snap-mandatory overflow-x-scroll pb-4 px-1">
+        <div className="grid grid-cols-1 items-center  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6">
           {products.map((item, idx) => (
-            <div
+            <Card
               key={idx}
-              className="min-w-[300px] max-w-[300px] flex-shrink-0  rounded-xl shadow-md overflow-hidden snap-start"
+              className="min-w-[250px] max-w-[300px] flex-shrink-0 p-0  rounded-xl shadow-md overflow-hidden snap-start"
             >
               <img
-                src={item.image}
+                src={item.productVariants[0].variantImage}
                 alt={item.name}
-                className="w-full h-64 object-cover"
+                className="w-full h-64 object-fit "
               />
               <div className="p-4">
                 <h3 className="text-sm font-semibold mb-1">{item.name}</h3>
-                <p className="text-sm -700 mb-3">${item.price}</p>
-                <button className="w-full bg-black text-white text-sm py-2 rounded-full">
+                <p className="text-sm -700 mb-3">${item.productVariants[0].price}</p>
+                <Button onClick={() => navigate('/products/'+item.id)} className="w-full text-sm py-2 rounded-full">
                   Add to Cart +
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

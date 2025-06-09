@@ -1,5 +1,5 @@
 import { Role } from "@/models/enum/role-enum.ts";
-import { HomePage } from "@/pages/public/home-page.tsx";
+import HomePage from "@/pages/public/home-page.tsx";
 import Layout from "@/pages/layout.tsx";
 import CreateProductPage from "@/pages/admin/create-product-page.tsx";
 import LoginPage from "@/pages/auth/login-page.tsx";
@@ -14,9 +14,10 @@ import ContextProvider from "@/pages/context-provider.tsx";
 import AdminLayout from "@/pages/admin-layout.tsx";
 import DashboardPage from "@/pages/admin/dashboard-page.tsx";
 import ProductPage from "@/pages/admin/product-page.tsx";
-import { CartPage } from "@/pages/cart/cart-page";
-import ProductCategory from "@/pages/product/product-category";
-import { ProductDetailPage } from "@/pages/productDetail/product-detail";
+import ProductDetail from "@/pages/product/product-category";
+import ProductDetailPage from "@/pages/public/product-detail.tsx";
+import CartPage from "@/pages/private/cart-page.tsx";
+import CheckoutPage from "@/pages/private/check-out.tsx";
 
 
 export const routes = createBrowserRouter([
@@ -33,34 +34,22 @@ export const routes = createBrowserRouter([
                 element: <HomePage />,
               },
               {
-                path: "/category/Woman",
-                element: <ProductCategory />,
+                path: "/category/woman",
+                element: <ProductDetail />,
               },
               {
                 path: "/cartTest",
                 element: <CartPage />,
               },
               {
-                path: "/productDetail",
+                path: "/product/:id",
                 element: <ProductDetailPage />,
-              },
-              {
-                path: "/admin/dashboard",
-                element: <DashboardPage />,
-              },
-              {
-                path: "/admin/products",
-                element: <ProductPage />,
-              },
+              }
             ],
           },
           {
-            element: <ProtectedRoute role={Role.USER} />,
+            element: <ProtectedRoute />,
             children: [
-              {
-                path: "/create-product",
-                element: <CreateProductPage />,
-              },
               {
                 path: "/profile",
                 element: <ProfilePage />,
@@ -69,6 +58,10 @@ export const routes = createBrowserRouter([
                 path: "/cart",
                 element: <CartPage />,
               },
+              {
+                path: "/checkout",
+                element: <CheckoutPage />
+              }
             ],
           },
         ],

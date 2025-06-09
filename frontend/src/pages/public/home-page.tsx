@@ -1,27 +1,22 @@
-import FooterSection from "@/components/footer";
-import Navbar from "@/components/navbar.tsx";
-import { useEffect } from "react";
 import HeroSection from "./hero-section";
 import FeaturesSection from "./features-section";
 import FeaturedProducts from "./featured-product";
 
-export const HomePage = () => {
-  useEffect(() => {}, []);
+const HomePage = () => {
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* <Navbar /> */}
 
       <main className="flex-grow">
         <HeroSection />
         <FeaturesSection />
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Featured Products
-        </h2>
-        <FeaturedProducts />
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Featured Products
+          </h2>
+          <FeaturedProducts />
+        </div>
       </main>
-
-      <FooterSection />
-    </div>
   );
 };
+
+export default HomePage;

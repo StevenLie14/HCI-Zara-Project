@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Package } from "lucide-react"
+import {HomeIcon, LayoutDashboard, Package} from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +14,12 @@ import {useNavigate} from "react-router-dom";
 
 const AdminSidebar = () => {
   const menuItems = [
+    {
+      id: "home",
+      label: "Home",
+      icon: HomeIcon,
+      link: "/",
+    },
     {
       id: "dashboard",
       label: "Dashboard",

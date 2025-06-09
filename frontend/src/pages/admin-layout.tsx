@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import {Outlet} from "react-router-dom";
-import {DashboardHeader} from "@/components/admin-navbar.tsx";
-import AdminSidebar from "@/components/admin-sidebar.tsx";
+import AdminSidebar from "@/components/navigation/admin-sidebar.tsx";
+import {DashboardHeader} from "@/components/navigation/admin-navbar.tsx";
 
 const AdminLayout = () => {
   return (

@@ -1,11 +1,13 @@
-import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import ProfileNav from "@/components/nav/profile-nav.tsx";
+import {MobileNav} from "@/components/navigation/mobile-nav.tsx";
+import ProfileNav from "@/components/navigation/profile-nav.tsx";
+import {useAuth} from "@/context/auth-context.tsx";
 
 const Navbar = () => {
+  const { searchProduct } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background">
@@ -104,13 +106,14 @@ const Navbar = () => {
               type="search"
               placeholder="Search..."
               className="h-9 w-[200px] rounded-full bg-accent/50 pl-8 pr-4"
+              onChange={(e) => searchProduct(e.target.value)}
             />
             <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </div>
 
           <ThemeToggle />
 
-          <ProfileNav showCart={true} />
+          <ProfileNav />
         </div>
       </div>
     </header>

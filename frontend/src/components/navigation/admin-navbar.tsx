@@ -1,6 +1,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import ProfileNav from "@/components/nav/profile-nav.tsx";
 import {ThemeToggle} from "@/components/theme-toggle.tsx";
+import {Link} from "react-router-dom";
+import ProfileNav from "@/components/navigation/profile-nav.tsx";
 
 
 export function DashboardHeader() {
@@ -12,14 +13,9 @@ export function DashboardHeader() {
         <div className="flex items-center space-x-4">
           <SidebarTrigger />
           <div className="flex items-center space-x-8">
-            <h2 className="text-xl font-bold">ZARA</h2>
-            {/*<nav className="flex space-x-6">*/}
-            {/*  {navItems.map((item) => (*/}
-            {/*    <Button key={item} variant="ghost" className="text-muted-foreground hover:text-foreground">*/}
-            {/*      {item}*/}
-            {/*    </Button>*/}
-            {/*  ))}*/}
-            {/*</nav>*/}
+            <Link to="/" className="text-xl font-bold uppercase">
+              Zara
+            </Link>
           </div>
         </div>
         <div className={`flex items-center space-x-4`}>

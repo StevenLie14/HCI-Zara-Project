@@ -1,21 +1,24 @@
+import {Card} from "@/components/ui/card.tsx";
+import {Button} from "@/components/ui/button.tsx";
+
 const categories = [
   {
     title: "Woman",
     description:
       "Elegant pieces for every occasion. Shop the latest trends in women’s fashion.",
-    image: "/category-woman.jpg",
+    image: "/picture/women-card.png",
   },
   {
     title: "Man",
     description:
       "Refined essentials and statement pieces. Explore our men’s collection.",
-    image: "/category-man.jpg",
+    image: "/picture/man-card.png",
   },
   {
     title: "Kids",
     description:
       "Comfortable, playful, and stylish. Find fashion for your little ones.",
-    image: "/category-kids.jpg",
+    image: "/picture/kid-card.png",
   },
 ];
 
@@ -27,23 +30,25 @@ const FeaturesSection = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((cat, idx) => (
-          <div key={idx} className="rounded-xl overflow-hidden shadow-md ">
+          <Card key={idx} className="rounded-xl overflow-hidden gap-0 shadow-md p-0">
             <img
               src={cat.image}
               alt={cat.title}
-              className="w-full h-64 object-cover"
+              className="w-full h-100 object-cover object-top"
             />
-            <div className="p-4">
-              <h3 className="text-xl font-bold">{cat.title}</h3>
-              <p className="text-sm  mb-4">{cat.description}</p>
-              <a
-                href={`/category/${cat.title}`}
-                className="text-sm font-medium inline-flex items-center"
-              >
-                Shop Now <span className="ml-1">→</span>
-              </a>
+            <div className={"p-4"}>
+              <h3 className="text-xl font-bold m-2">{cat.title}</h3>
+              <p className="text-sm m-2">{cat.description}</p>
+              <Button className={"m-2"}>
+                <a
+                  href={`/category/${cat.title}`}
+                  className="text-sm font-medium inline-flex items-center"
+                >
+                  Shop Now <span className="ml-1">→</span>
+                </a>
+              </Button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </section>
