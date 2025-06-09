@@ -12,6 +12,7 @@ public class CartItemDto {
     private String id;
     private int quantity;
     private ProductVariantDto variant;
+    private ProductDto product;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createdAt;

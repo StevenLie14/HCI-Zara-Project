@@ -75,6 +75,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
       id: undefined,
       name: "",
       description: "",
+      gender:"",
       categoryId: "",
       variants: [
         {
@@ -202,7 +203,7 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                 <CardTitle>Basic Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
                     name="name"
@@ -212,6 +213,27 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
                         <FormControl>
                           <Input placeholder="Enter product name" {...field} />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gender</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className={"w-full"}>
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Male">Male</SelectItem>
+                            <SelectItem value="Female">Female</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

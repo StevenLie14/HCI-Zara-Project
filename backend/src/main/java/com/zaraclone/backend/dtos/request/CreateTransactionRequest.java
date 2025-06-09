@@ -6,5 +6,6 @@ import java.util.List;
 
 @Data
 public class CreateTransactionRequest {
-    private List<CreateTransactionItemRequest> items;
+    private String shippingAddressId;
+    private String paymentMethod;
 }

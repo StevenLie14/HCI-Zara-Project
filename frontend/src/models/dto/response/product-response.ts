@@ -6,6 +6,7 @@ export interface ProductResponse {
   id : string
   name : string
   description : string
+  gender: string
   category : CategoryResponse
   productVariants : ProductVariantResponse[]
   productImages : ProductImageResponse[]

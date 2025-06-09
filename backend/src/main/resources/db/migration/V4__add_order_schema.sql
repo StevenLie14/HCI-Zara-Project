@@ -13,7 +13,7 @@ CREATE TABLE cart_items (
 CREATE TABLE transactions (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
-    status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'paid', 'shipped', 'delivered', 'cancelled')),
+    status VARCHAR(50) NOT NULL CHECK (status IN ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
     payment_method VARCHAR(50) NOT NULL CHECK (payment_method IN ('COD', 'bank_transfer')),
     shipping_address_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

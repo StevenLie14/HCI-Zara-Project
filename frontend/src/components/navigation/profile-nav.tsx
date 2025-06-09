@@ -16,7 +16,8 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {Role} from "@/models/enum/role-enum.ts";
-import {mockProducts} from "@/models/constant/products.ts";
+import {useCarts} from "@/context/cart-context.tsx";
+import {loadImage} from "@/utils/utils.ts";
 
 const ProfileNav = () => {
   const { isAuthenticated, me, logout } = useAuth();
@@ -25,8 +26,7 @@ const ProfileNav = () => {
     logout.mutate();
   };
 
-  const cartItems = mockProducts.slice(0, 2);
-
+  const {carts} = useCarts()
 
   return (
     <>
@@ -42,14 +42,14 @@ const ProfileNav = () => {
                   <ShoppingBag className="h-5 w-5"/>
                   <span
                     className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    {cartItems.length}
+                    {carts.length}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-80 shadow-lg -translate-y-2" align="center" forceMount>
                 <div className="flex items-center justify-between px-4 py-2 border-b">
                   <p className="font-semibold text-sm">
-                    Cart ({cartItems.length})
+                    Cart ({carts.length})
                   </p>
                   <Link to="/cart" className="text-sm hover:underline">
                     See More...
@@ -57,19 +57,26 @@ const ProfileNav = () => {
                 </div>
 
                 <div className="max-h-80 overflow-y-auto divide-y">
-                  {cartItems.map((item, index) => (
+                  {
+                    carts.length <= 0 && (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        Your cart is empty.
+                      </div>
+                    )
+                  }
+                  {carts.map((item, index) => (
                     <div key={index} className="flex gap-3 p-4 items-start">
                       <img
-                        src={item.productVariants[0].variantImage}
-                        alt={item.name}
+                        src={loadImage(item.variant.variantImage)}
+                        alt={item.product.name}
                         className="w-14 h-14 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium line-clamp-1">{item.name}</p>
-                        {/*<p className="text-xs text-muted-foreground">{item.}</p>*/}
+                        <p className="text-sm font-medium line-clamp-1">{item.product.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.variant.color} - {item.variant.size}</p>
                       </div>
                       <div className="text-sm font-semibold whitespace-nowrap">
-                        {item.productVariants[0].stock} × ${item.productVariants[0].price}
+                        {item.quantity} × ${item.variant.price}
                       </div>
                     </div>
                   ))}

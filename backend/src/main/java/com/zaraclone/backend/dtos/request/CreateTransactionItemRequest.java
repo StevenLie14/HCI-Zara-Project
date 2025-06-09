@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateTransactionItemRequest {
-    private int quantity;
-    private int price;
-    private String variantId;
-    private String productId;
+    private String shippingAddressId;
+    private String paymentMethod;
 }

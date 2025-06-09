@@ -41,7 +41,7 @@ const LoadingScreen = ({
     <div
       className={cn(
         "flex flex-col items-center justify-center",
-        fullScreen ? "fixed inset-0 z-50" : "w-full h-full min-h-[200px]",
+        fullScreen ? "fixed inset-0 z-50 bg-white dark:bg-black" : "w-full h-full min-h-[200px]",
         className,
       )}
     >

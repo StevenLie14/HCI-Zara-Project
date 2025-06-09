@@ -2,9 +2,10 @@ import type {ProductResponse} from "@/models/dto/response/product-response.ts";
 
 export const mockProducts: ProductResponse[] = [
   {
-    id: "prod-001",
+    id: "prod",
     name: "Classic Sunset Blazer",
     description: "A timeless white shirt made from 100% cotton.",
+    gender: "Male",
     category: {
       id: "cat-001",
       name: "Men's Clothing",
@@ -35,8 +36,9 @@ export const mockProducts: ProductResponse[] = [
     createdAt: "2025-06-01T10:00:00Z"
   },
   {
-    id: "prod-002",
+    id: "prod",
     name: "Slim Fit Blue Shirt",
+    gender: "Male",
     description: "A sleek slim-fit shirt for office and casual wear.",
     category: {
       id: "cat-002",
@@ -68,9 +70,10 @@ export const mockProducts: ProductResponse[] = [
     createdAt: "2025-06-01T11:00:00Z"
   },
   {
-    id: "prod-003",
+    id: "prod",
     name: "Zara Best Pants",
     description: "Comfortable cotton shirt with red and black check pattern.",
+    gender: "Male",
     category: {
       id: "cat-003",
       name: "Unisex Clothing",
@@ -101,9 +104,10 @@ export const mockProducts: ProductResponse[] = [
     createdAt: "2025-06-01T12:00:00Z"
   },
   {
-    id: "prod-004",
+    id: "prod",
     name: "GG Bag's",
     description: "Ideal for business meetings or formal events.",
+    gender: "Female",
     category: {
       id: "cat-001",
       name: "Men's Clothing",
@@ -134,9 +138,10 @@ export const mockProducts: ProductResponse[] = [
     createdAt: "2025-06-01T13:00:00Z"
   },
   {
-    id: "prod-005",
+    id: "prod",
     name: "Black Linen Shirt",
     description: "Lightweight and breathable linen fabric, perfect for summer.",
+    gender:  "Male",
     category: {
       id: "cat-003",
       name: "Unisex Clothing",

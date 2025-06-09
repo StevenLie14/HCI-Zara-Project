@@ -4,6 +4,7 @@ import {LayoutProvider} from "@/context/layout-context.tsx";
 import {Outlet, useLocation} from "react-router-dom";
 import {useEffect} from "react";
 import {ToastService} from "@/utils/toast.ts";
+import {CartProvider} from "@/context/cart-context.tsx";
 
 const ContextProvider = () => {
   const location = useLocation();
@@ -20,9 +21,11 @@ const ContextProvider = () => {
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme={"system"} storageKey={"vite-ui-theme"}>
-        <LayoutProvider>
-          <Outlet />
-        </LayoutProvider>
+        <CartProvider>
+          <LayoutProvider>
+            <Outlet />
+          </LayoutProvider>
+        </CartProvider>
       </ThemeProvider>
     </AuthProvider>
   )

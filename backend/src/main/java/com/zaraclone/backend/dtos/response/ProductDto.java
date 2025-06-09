@@ -13,6 +13,7 @@ public class ProductDto {
     private String id;
     private String name;
     private String description;
+    private String gender;
     private CategoryDto category;
     private List<ProductVariantDto> productVariants;
     private List<ProductImageDto> productImages;

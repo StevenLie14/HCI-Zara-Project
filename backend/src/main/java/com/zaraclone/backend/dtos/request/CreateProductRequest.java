@@ -8,6 +8,7 @@ public class CreateProductRequest {
     private String name;
     private String description;
     private String categoryId;
+    private String gender;
     private List<CreateProductVariantRequest> variants;
     private List<CreateProductImageRequest> images;
 }

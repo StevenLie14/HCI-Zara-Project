@@ -9,6 +9,7 @@ public class UpdateProductRequest {
     private String id;
     private String name;
     private String description;
+    private String gender;
     private String categoryId;
     private List<UpdateProductVariantRequest> variants;
     private List<UpdateProductImageRequest> images;

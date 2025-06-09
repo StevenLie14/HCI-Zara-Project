@@ -1,10 +1,19 @@
-import { useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import {useEffect, useState} from "react"
+import {useParams, Link, useNavigate} from "react-router-dom"
 import { ArrowLeft, Truck, RotateCcw, Leaf, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react"
 import {Select, SelectContent, SelectItem, SelectTrigger} from "@/components/ui/select.tsx";
 import {SelectValue} from "@radix-ui/react-select";
 import {Button} from "@/components/ui/button.tsx";
 import FeaturedProducts from "@/pages/public/featured-product.tsx";
+import {useMutation} from "@tanstack/react-query";
+import {ToastService} from "@/utils/toast.ts";
+import type {ProductResponse} from "@/models/dto/response/product-response.ts";
+import {ProductService} from "@/services/product-service.ts";
+import LoadingScreen from "@/components/loading-screen.tsx";
+import type {ProductVariantResponse} from "@/models/dto/response/product-variant-response.ts";
+import {loadImage} from "@/utils/utils.ts";
+import {type CreateCartRequest} from "@/models/dto/request/cart/create-cart.ts";
+import {CartService} from "@/services/cart-service.ts";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -12,46 +21,107 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [productImages, setProductImages] = useState<string[]>([])
+  const [product, setProduct] = useState<ProductResponse | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariantResponse>({} as ProductVariantResponse);
+  const navigate = useNavigate()
 
-  const product = {
-    id: "1",
-    name: "Stylish T-Shirt",
-    price: 29.99,
-    description: "A stylish t-shirt made from high-quality materials.",
-    image: "/picture/kid-card.png",
-    category: "Fashion",
-    colors: ["#000000", "#FFC0CB", "#A52A2A", "#F5F5DC", "#808080", "#FFFFFF", "#87CEEB", "#800080", "#1E90FF"],
-    sizes: ["S", "M", "L", "XL"],
+  const getProduct = useMutation({
+    mutationFn : ProductService.getProductById,
+    onSuccess: (data) => {
+      setProduct(data)
+      const productImages = data.productImages.map(image => image.productImage)
+      setProductImages([...productImages])
+      setSelectedVariant(data.productVariants[0] || {} as ProductVariantResponse)
+      setSelectedColor(data.productVariants[0]?.color || "")
+      setSelectedSize(data.productVariants[0]?.size || "")
+    },
+    onError: (error) => {
+      ToastService.error(error.message)
+      navigate('/')
+    },
+  })
+
+  const handleVariantChange = (color: string, size: string) => {
+    const variant = product?.productVariants.find(v => v.color === color && v.size === size)
+    if (variant) {
+      setSelectedSize(size)
+      setSelectedVariant(variant)
+      if (quantity > variant.stock) {
+        setQuantity(variant.stock)
+      }
+    } else {
+      ToastService.error("Variant not found")
+    }
+  }
+
+  const handleColorChange = (color: string) => {
+    const variant = product?.productVariants.find(v => v.color === color)
+    if (variant) {
+      setSelectedColor(color)
+      setSelectedSize(variant.size)
+      setSelectedVariant(variant)
+      if (quantity > variant.stock) {
+        setQuantity(variant.stock)
+      }
+    } else {
+      ToastService.error("Color not found")
+    }
   }
 
 
-  if (!product) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Product not found</h1>
-        <Link to="/" className="mt-4 inline-block text-blue-600 hover:underline">
-          Return to home
-        </Link>
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (id) {
+      getProduct.mutate(id)
+    }
+  },[])
 
-  const productImages = [
-    '/picture/man-card.png',
-    '/picture/women-card.png',
-    product.image,
-  ]
+  const addToCart = useMutation({
+    mutationFn: CartService.createCart,
+    onSuccess: () => {
+      ToastService.success("Product added to cart")
+      navigate("/cart")
+    },
+    onError: (error) => {
+      ToastService.error(error.message)
+    },
+  })
 
   const handleAddToCart = () => {
-    // addToCart({
-    //   id: product.id,
-    //   name: product.name,
-    //   price: product.price,
-    //   image: product.image,
-    //   color: selectedColor,
-    //   size: selectedSize,
-    //   quantity,
-    // })
+    console.log(selectedVariant)
+    if (!product || !selectedVariant) {
+      ToastService.error("Please select a product variant")
+      return
+    }
+
+    if (selectedColor === "") {
+      ToastService.error("Please select a color")
+      return
+    }
+
+    if (selectedSize === "") {
+      ToastService.error("Please select a size")
+      return
+    }
+
+
+    if (selectedVariant.stock < quantity) {
+      ToastService.error("Not enough stock available")
+      return
+    }
+
+    if (quantity <= 0) {
+      ToastService.error("Quantity must be greater than 0")
+      return
+    }
+
+    const cartRequest: CreateCartRequest = {
+      productId: product.id,
+      quantity: quantity,
+      variantId: selectedVariant.id,
+    }
+
+    addToCart.mutate(cartRequest)
   }
 
   const nextImage = () => {
@@ -62,41 +132,27 @@ export default function ProductDetailPage() {
     setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length)
   }
 
-  const getColorName = (color: string) => {
-    const colorMap: { [key: string]: string } = {
-      "#000000": "Black",
-      "#FFC0CB": "Pink",
-      "#A52A2A": "Brown",
-      "#F5F5DC": "Beige",
-      "#808080": "Gray",
-      "#FFFFFF": "White",
-      "#87CEEB": "Sky Blue",
-      "#800080": "Purple",
-      "#1E90FF": "Blue",
-    }
-    return colorMap[color] || color
+  if (!product) {
+    return <LoadingScreen text={"Loading..."} />
   }
 
+  // @ts-ignore
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Back Button */}
       <Link to="/" className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
       </Link>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Product Images */}
         <div className="space-y-4">
-          {/* Main Image with Navigation */}
           <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
             <img
-              src={productImages[currentImageIndex] || "/placeholder.svg"}
+              src={loadImage(productImages[currentImageIndex]) || "/placeholder.svg"}
               alt={product.name}
               className="h-full w-full object-cover"
             />
 
-            {/* Navigation Arrows */}
             {productImages.length > 1 && (
               <>
                 <button
@@ -116,7 +172,6 @@ export default function ProductDetailPage() {
               </>
             )}
 
-            {/* Image Indicators */}
             {productImages.length > 1 && (
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
                 {productImages.map((_, index) => (
@@ -136,50 +191,47 @@ export default function ProductDetailPage() {
 
         </div>
 
-        {/* Product Details */}
         <div className="flex flex-col">
-          <div className="mb-2 text-sm text-muted-foreground capitalize">{product.category}'s T-Shirt</div>
+          <div className="mb-2 text-sm text-muted-foreground capitalize">{product.category.name}</div>
           <h1 className="mb-4 text-3xl font-bold">{product.name}</h1>
           <p className="mb-6 text-muted-foreground leading-relaxed">{product.description}</p>
-          <div className="mb-6 text-2xl font-bold">${product.price.toFixed(2)}</div>
+          <div className="mb-6 text-2xl font-bold">${selectedVariant.price.toFixed(2)}</div>
 
-          {/* Color Selection */}
-          {product.colors && product.colors.length > 0 && (
+          {product.productVariants && product.productVariants.length > 0 && (
             <div className="mb-6">
               <label className="mb-3 block text-sm font-medium">Color:</label>
               <div className="flex gap-3">
-                {product.colors.map((color) => (
+                {[...new Map(product.productVariants.map(variant => [variant.color, variant])).values()].map((variant) => (
                   <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
+                    key={variant.color}
+                    onClick={() => handleColorChange(variant.color)}
                     className={`relative h-8 w-8 rounded-full border-2 transition-all ${
-                      selectedColor === color
+                      selectedColor === variant.color
                         ? "border-foreground scale-110"
                         : "border-muted hover:border-foreground/50"
                     }`}
-                    style={{backgroundColor: color}}
-                    aria-label={`Select color ${getColorName(color)}`}
-                    title={getColorName(color)}
+                    style={{backgroundColor: variant.color}}
+                    aria-label={`Select color ${variant.color}`}
+                    title={variant.color}
                   >
-                    {selectedColor === color && <div className="absolute inset-0 rounded-full border-2 border-white"/>}
+                    {selectedColor === variant.color && <div className="absolute inset-0 rounded-full border-2 border-white"/>}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Size Selection */}
-          {product.sizes && product.sizes.length > 0 && (
+          {product.productVariants && product.productVariants.length > 0 && (
             <div className="mb-6">
               <label className="mb-3 block text-sm font-medium">Size:</label>
-              <Select value={selectedSize} onValueChange={setSelectedSize}>
+              <Select value={selectedSize} onValueChange={(e) => handleVariantChange(selectedColor, e)}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Size"/>
+                  <SelectValue placeholder={selectedColor == ""? "Select a color first": "Select size"}/>
                 </SelectTrigger>
                 <SelectContent>
-                  {product.sizes.map((size) => (
-                    <SelectItem key={size} value={size}>
-                      {size}
+                  {product.productVariants.filter((variant) => variant.color == selectedColor).map((variant) => (
+                    <SelectItem key={variant.size} value={variant.size}>
+                      {variant.size}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -187,7 +239,9 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Quantity */}
+          <div className="mb-8">
+            <label className="mb-3 block text-sm font-medium">Stock: {selectedVariant.stock}</label>
+          </div>
           <div className="mb-8">
             <label className="mb-3 block text-sm font-medium">Quantity:</label>
             <div className="flex items-center">
@@ -207,6 +261,7 @@ export default function ProductDetailPage() {
                 variant="outline"
                 size="icon"
                 onClick={() => setQuantity(quantity + 1)}
+                disabled={quantity >= selectedVariant.stock}
                 className="rounded-l-none"
               >
                 <Plus className="h-4 w-4"/>
@@ -214,12 +269,10 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Add to Cart Button */}
           <Button onClick={handleAddToCart} className="mb-8 w-full h-12 text-base">
             Add to Cart +
           </Button>
 
-          {/* Product Features */}
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
               <Truck className="h-4 w-4"/>
@@ -245,7 +298,7 @@ export default function ProductDetailPage() {
               }`}
             >
               <img
-                src={image || "/placeholder.svg"}
+                src={loadImage(image) || "/placeholder.svg"}
                 alt={`${product.name} view ${index + 1}`}
                 className="h-full w-full object-cover"
               />

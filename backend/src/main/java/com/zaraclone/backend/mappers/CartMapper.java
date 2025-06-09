@@ -8,11 +8,12 @@ import com.zaraclone.backend.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ProductVariantMapper.class,ProductMapper.class})
 public interface CartMapper {
     CartItemDto toDto(CartItem item);
-    @Mapping(target = "user", source = "user")
-    CartItem toEntity(CreateCartItemRequest createCartItemRequest, User user);
-        void update(UpdateCartItemRequest request, @MappingTarget CartItem item);
+    CartItem toEntity(CreateCartItemRequest createCartItemRequest);
+
+    void update(UpdateCartItemRequest request, @MappingTarget CartItem item);
 }

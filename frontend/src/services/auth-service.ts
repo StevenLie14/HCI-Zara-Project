@@ -38,7 +38,7 @@ export class AuthService extends BaseService {
     email: string,
   ): Promise<GetCodeResponse> => {
     return this.get<GetCodeResponse>(
-      `${this.url}/reset-password/${email}`,
+      `${this.url}/reset/${email}`,
       "Failed to send reset password OTP",
     );
   };

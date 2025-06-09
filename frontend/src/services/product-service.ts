@@ -10,16 +10,20 @@ export class ProductService extends BaseService {
     return this.get(this.url, "Get All Products Failed");
   };
 
+  public static getProductById = async (id : string) : Promise<ProductResponse> => {
+    return this.get(`${this.url}/${id}`, "Get Product Detail Failed");
+  }
+
   public static createProduct = async (productRequest: CreateProductRequest) : Promise<ProductResponse> => {
     const formData = new FormData();
     const productData = {
       name: productRequest.name,
       description: productRequest.description,
+      gender: productRequest.gender,
       categoryId: productRequest.categoryId,
       variants: productRequest.variants.map(({ imageFile, ...rest }) => rest),
       images: productRequest.images.map(({ imageFile, ...rest }) => rest),
     };
-    console.log("Product data to be sent:", productData);
     formData.append(
       "product",
       new Blob([JSON.stringify(productData)], {
@@ -48,11 +52,11 @@ export class ProductService extends BaseService {
       id: productRequest.id,
       name: productRequest.name,
       description: productRequest.description,
+      gender: productRequest.gender,
       categoryId: productRequest.categoryId,
       variants: productRequest.variants.map(({ imageFile, ...rest }) => rest),
       images: productRequest.images.map(({ imageFile, ...rest }) => rest),
     };
-    console.log("Product data to be sent:", productData);
     formData.append(
       "product",
       new Blob([JSON.stringify(productData)], {

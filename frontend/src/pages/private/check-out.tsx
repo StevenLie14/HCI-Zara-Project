@@ -2,8 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router-dom"
-import { Plus, Edit, Check } from "lucide-react"
-import {z} from "zod";
+import {Plus, Edit, AlertTriangle} from "lucide-react"
 import {ToastService} from "@/utils/toast.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -20,73 +19,68 @@ import {Separator} from "@/components/ui/separator.tsx";
 import useAddress from "@/hooks/use-address.ts";
 import AddressDialog from "@/components/profile/address-dialog.tsx";
 import {paymentMethods} from "@/models/constant/payment-method.ts";
-import {mockProducts} from "@/models/constant/products.ts";
-
-export const checkoutSchema = z.object({
-  shippingAddressId: z.string().min(1, { message: "Please select a shipping address" }),
-  paymentMethod: z.string().min(1, { message: "Please select a payment method" }),
-  items: z.array(
-    z.object({
-      id: z.string(),
-      product_id: z.string(),
-      variant_id: z.string(),
-      price: z.number().min(0, { message: "Price must be a positive number" }),
-      quantity: z.number().min(1, { message: "Quantity must be at least 1" }),
-    })
-  ).nonempty({ message: "Your cart is empty" }),
-})
-
-export type CheckoutFormValues = z.infer<typeof checkoutSchema>
-
-
+import {
+  type CreateTransactionRequest,
+  createTransactionSchema
+} from "@/models/dto/request/transaction/create-transaction-request.ts";
+import {useCarts} from "@/context/cart-context.tsx";
+import {loadImage} from "@/utils/utils.ts";
+import {useMutation} from "@tanstack/react-query";
+import {TransactionService} from "@/services/transaction-service.ts";
 
 export default function CheckoutPage() {
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
   const { editingAddress, handleAddAddress, handleEditAddress, showAddressDialog, setShowAddressDialog, addresses, getAddresses } = useAddress()
-  const [orderNumber, setOrderNumber] = useState("")
 
   const navigate = useNavigate()
 
-  const shipping = 0 // Free shipping
-  const taxRate = 0 // 10% tax
+  const shipping = 0
 
+  const {carts} = useCarts()
+  const subtotal = carts.reduce((total, item) => total + item.variant.price * item.quantity, 0)
+  const total = subtotal + shipping
 
-  const cartItems = mockProducts.slice(0,2)
-  const subtotal = cartItems.reduce((total, item) => total + item.productVariants[0].price * item.productVariants[0].stock, 0)
-  const tax = subtotal * taxRate
-  const total = subtotal + shipping + tax
-
-  // Main checkout form
-  const checkoutForm = useForm<CheckoutFormValues>({
-    resolver: zodResolver(checkoutSchema),
+  const checkoutForm = useForm<CreateTransactionRequest>({
+    resolver: zodResolver(createTransactionSchema),
     defaultValues: {
       shippingAddressId: addresses[0]?.id || undefined,
       paymentMethod: paymentMethods[0].id,
     },
   })
 
-  const onCheckoutSubmit = (values: CheckoutFormValues) => {
-    if (cartItems.length === 0) {
+  const transactionMutation = useMutation({
+    mutationFn: TransactionService.createTransaction,
+    onSuccess: () => {
+      ToastService.success("Checkout successful", "Your order has been placed successfully.");
+      navigate("/order-history");
+    },
+    onError: (error) => {
+      ToastService.error("Checkout failed", error.message || "An error occurred during checkout.");
+    }
+  })
+
+  const onCheckoutSubmit = (request: CreateTransactionRequest) => {
+    if (carts.length === 0) {
       ToastService.error("Your cart is empty", "Please add items to your cart before proceeding to checkout.")
       return
     }
+    transactionMutation.mutate(request)
 
-    setOrderNumber(`ZR-${Math.floor(100000 + Math.random() * 900000)}`)
-    setIsConfirmationOpen(true)
-  }
-
-
-  const handleOrderConfirmation = () => {
     setIsConfirmationOpen(false)
-    navigate("/")
-    // toast({
-    //   title: "Order placed successfully!",
-    //   description: `Your order ${orderNumber} has been confirmed.`,
-    // })
   }
 
-  if (cartItems.length === 0) {
+  const handleCheckOut = checkoutForm.handleSubmit(
+    (_) => {
+      setIsConfirmationOpen(true);
+    },
+    (_) => {
+      ToastService.error("Form validation failed.", "Please check the form for errors.");
+    }
+  );
+
+
+  if (carts.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="mb-4 text-2xl font-bold">Your cart is empty</h1>
@@ -101,7 +95,7 @@ export default function CheckoutPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Checkout</h1>
         <p className="text-muted-foreground">
-          You have {cartItems.length} item{cartItems.length !== 1 ? "s" : ""} in your cart
+          You have {carts.length} item{carts.length !== 1 ? "s" : ""} in your cart
         </p>
       </div>
 
@@ -114,29 +108,29 @@ export default function CheckoutPage() {
               <div className="rounded-lg border p-6">
                 <h2 className="mb-4 text-lg font-medium">Your Items</h2>
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
-                    <div key={`${item.id}-${item.productVariants[0].color}-${item.productVariants[0].size}`} className="flex gap-4">
+                  {carts.map((item) => (
+                    <div key={`${item.id}-${item.variant.color}-${item.variant.size}`} className="flex gap-4">
                       <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
                         <img
-                          src={item.productVariants[0].variantImage || "/placeholder.svg"}
-                          alt={item.name}
+                          src={loadImage(item.variant.variantImage) || "/placeholder.svg"}
+                          alt={item.product.name}
                           className="h-full w-full object-cover"
                         />
                       </div>
                       <div className="flex flex-1 justify-between">
                         <div>
-                          <h3 className="font-medium">{item.name}</h3>
+                          <h3 className="font-medium">{item.product.name}</h3>
                           <div className="flex gap-2 text-sm text-muted-foreground">
-                            {item.productVariants[0].color && (
+                            {item.variant.color && (
                               <div>
-                                Color: {item.productVariants[0].color}
+                                Color: {item.variant.color}
                               </div>
                             )}
-                            {item.productVariants[0].size && <div>Size: {item.productVariants[0].size}</div>}
+                            {item.variant.size && <div>Size: {item.variant.size}</div>}
                           </div>
-                          <span className={"text-sm text-muted-foreground"}>Qty: {item.productVariants[0].stock}</span>
+                          <span className={"text-sm text-muted-foreground"}>Qty: {item.quantity}</span>
                         </div>
-                        <div className="font-medium">${(item.productVariants[0].price * item.productVariants[0].stock).toFixed(2)}</div>
+                        <div className="font-medium">${(item.variant.price * item.quantity).toFixed(2)}</div>
                       </div>
                     </div>
                   ))}
@@ -250,42 +244,46 @@ export default function CheckoutPage() {
             </div>
 
             <Button
-              onClick={checkoutForm.handleSubmit(onCheckoutSubmit)}
+              type={"button"}
+              onClick={handleCheckOut}
               className="mt-6 w-full"
-              disabled={cartItems.length === 0}
+              disabled={carts.length === 0}
             >
               Checkout Now
             </Button>
+            <Dialog open={isConfirmationOpen} onOpenChange={setIsConfirmationOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900">
+                    <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-300" />
+                  </div>
+                  <DialogTitle className="text-center">Confirm Checkout</DialogTitle>
+                  <DialogDescription className="text-center">
+                    Are you sure you want to proceed with the checkout?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex justify-center gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsConfirmationOpen(false)}
+                    className="w-full sm:w-1/2"
+                  >
+                    No
+                  </Button>
+                  <Button
+                    onClick={checkoutForm.handleSubmit(onCheckoutSubmit)}
+                    className="w-full sm:w-1/2"
+                  >
+                    Yes, Checkout
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
 
-      <Dialog open={isConfirmationOpen} onOpenChange={setIsConfirmationOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <div
-              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-              <Check className="h-8 w-8 text-green-600 dark:text-green-300"/>
-            </div>
-            <DialogTitle className="text-center">Order Confirmed!</DialogTitle>
-            <DialogDescription className="text-center">
-              Thank you for your purchase. Your order has been successfully placed.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="text-center">
-            <div className="mb-4 rounded-lg bg-muted p-4">
-              <p className="mb-2 font-medium">Order Number:</p>
-              <p className="text-xl font-bold">{orderNumber}</p>
-            </div>
-            <p className="text-sm text-muted-foreground">A confirmation email has been sent to your email address.</p>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleOrderConfirmation} className="w-full">
-              Continue Shopping
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
       <AddressDialog showAddressDialog={showAddressDialog} setShowAddressDialog={setShowAddressDialog} editingAddress={editingAddress} getAddresses={getAddresses} />
     </div>
   )

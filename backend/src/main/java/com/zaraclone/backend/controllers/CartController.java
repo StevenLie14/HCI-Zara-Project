@@ -37,4 +37,10 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllCartItems() {
+        cartService.deleteAllCartItems();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

@@ -4,10 +4,10 @@ import { ChevronDown, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import {MobileNav} from "@/components/navigation/mobile-nav.tsx";
 import ProfileNav from "@/components/navigation/profile-nav.tsx";
-import {useAuth} from "@/context/auth-context.tsx";
+import {useProduct} from "@/context/product-context.tsx";
 
 const Navbar = () => {
-  const { searchProduct } = useAuth();
+  const { searchProduct } = useProduct();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background">

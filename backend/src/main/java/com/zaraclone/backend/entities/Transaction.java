@@ -23,6 +23,7 @@ public class Transaction {
     private String id;
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
+    private String paymentMethod;
     @CreatedDate
     private Timestamp createdAt;
     @LastModifiedDate
@@ -33,6 +34,12 @@ public class Transaction {
     @JsonBackReference
     @ToString.Exclude
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id", nullable = false)
+    @JsonBackReference
+    @ToString.Exclude
+    private ShippingAddress address;
 
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

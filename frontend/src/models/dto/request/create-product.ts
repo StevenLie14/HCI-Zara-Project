@@ -6,6 +6,7 @@ export const createProductSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Product Name is required"),
   description: z.string().min(1, "Product Description is required"),
+  gender: z.string().min(1,"Gender is required"),
   categoryId: z.string().min(1, "Category is required"),
   variants: z
     .array(createProductVariantSchema)
