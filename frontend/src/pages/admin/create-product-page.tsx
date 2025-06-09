@@ -5,7 +5,6 @@ import {
   createProductSchema,
 } from "@/models/dto/request/create-product.ts";
 import { ProductService } from "@/services/product-service.ts";
-import { getProjectEnvVariables } from "@/utils/env.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -141,11 +140,6 @@ export default function CreateProductPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <img
-        className={"w-full h-full"}
-        src={getProjectEnvVariables().VITE_MINIO_URL + "/contact-hero.avif"}
-        alt={"dsa"}
-      />
       <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">

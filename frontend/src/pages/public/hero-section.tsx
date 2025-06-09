@@ -4,7 +4,7 @@ const HeroSection = () => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="../../assets/picture/Screenshot 2025-05-21 155452.png"
+          src="/picture/hero-background.png"
           alt="Hero Background"
           className="w-full h-full object-cover object-center"
         />

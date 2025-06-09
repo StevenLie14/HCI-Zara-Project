@@ -1,5 +1,4 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
-import React from "react";
 
 export const FooterSection = () => {
   const footerData = {
@@ -32,12 +31,12 @@ export const FooterSection = () => {
   return (
     <footer className="w-full  border-t ">
       <div className="max-w-[1152px] mx-auto py-12 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="md:col-span-1">
             <h2 className="font-normal text-2xl tracking-[2.40px] leading-6  [font-family:'GFS_Didot-Regular',Helvetica]">
               ZARA
             </h2>
-            <p className="mt-6 text-sm [font-family:'Poppins-Regular',Helvetica] leading-[14px]">
+            <p className="mt-6 text-sm">
               Koleksi fashion modern dan elegan untuk segala suasana. Temukan
               gaya yang kamu suka hanya di ZARA.
             </p>
@@ -54,76 +53,78 @@ export const FooterSection = () => {
             </div>
           </div>
 
-          <div>
-            <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
-              Categories
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerData.categories.map((item, index) => (
-                <li key={index}>
-                  <a
-                    href={item.link}
-                    className="text-base  [font-family:'Poppins-Regular',Helvetica] leading-4"
-                  >
-                    {item.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className={"grid grid-cols-2 lg:grid-cols-4 w-full gap-6 "}>
+            <div>
+              <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
+                Categories
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {footerData.categories.map((item, index) => (
+                  <li key={index}>
+                    <a
+                      href={item.link}
+                      className="text-base  [font-family:'Poppins-Regular',Helvetica] leading-4"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
-              Policies
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerData.policies.map((item, index) => (
-                <li key={index}>
-                  <a
-                    href={item.link}
-                    className="text-base [font-family:'Poppins-Regular',Helvetica] leading-4"
-                  >
-                    {item.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
+                Policies
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {footerData.policies.map((item, index) => (
+                  <li key={index}>
+                    <a
+                      href={item.link}
+                      className="text-base [font-family:'Poppins-Regular',Helvetica] leading-4"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
-              Help
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerData.help.map((item, index) => (
-                <li key={index}>
-                  <a
-                    href={item.link}
-                    className="text-base  [font-family:'Poppins-Regular',Helvetica] leading-4"
-                  >
-                    {item.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
+                Help
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {footerData.help.map((item, index) => (
+                  <li key={index}>
+                    <a
+                      href={item.link}
+                      className="text-base  [font-family:'Poppins-Regular',Helvetica] leading-4"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
-              Company
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {footerData.company.map((item, index) => (
-                <li key={index}>
-                  <a
-                    href={item.link}
-                    className="text-base [font-family:'Poppins-Regular',Helvetica] leading-4"
-                  >
-                    {item.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div>
+              <h3 className="font-semibold text-base  [font-family:'Poppins-SemiBold',Helvetica] leading-4">
+                Company
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {footerData.company.map((item, index) => (
+                  <li key={index}>
+                    <a
+                      href={item.link}
+                      className="text-base [font-family:'Poppins-Regular',Helvetica] leading-4"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

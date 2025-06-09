@@ -6,10 +6,9 @@ import {useMutation} from "@tanstack/react-query";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import CustomAlertDialog from "@/components/custom-alert-dialog.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import {getProjectEnvVariables} from "@/utils/env.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Camera} from "lucide-react";
-import {changeImageName} from "@/utils/utils.ts";
+import {changeImageName, loadImage} from "@/utils/utils.ts";
 
 const ProfileAvatarCard = () => {
   const { me } = useAuth()
@@ -67,7 +66,7 @@ const ProfileAvatarCard = () => {
         <div className="flex flex-col sm:flex-row items-center gap-6 pb-4 border-b">
           <div className="relative">
             <Avatar className="h-28 w-28">
-              <AvatarImage src={me?.profilePicture ? getProjectEnvVariables().VITE_MINIO_URL + me.profilePicture :  "/placeholder.svg"} alt={me?.name} />
+              <AvatarImage src={me?.profilePicture ? loadImage(me.profilePicture) :  "/placeholder.svg"} alt={me?.name} />
               <AvatarFallback className="text-xl">
                 {me?.name
                   .split(" ")
