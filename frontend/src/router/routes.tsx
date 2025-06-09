@@ -1,5 +1,5 @@
 import { Role } from "@/models/enum/role-enum.ts";
-import { HomePage } from "@/pages/public/home-page.tsx";
+import HomePage from "@/pages/public/home-page.tsx";
 import Layout from "@/pages/layout.tsx";
 import CreateProductPage from "@/pages/admin/create-product-page.tsx";
 import LoginPage from "@/pages/auth/login-page.tsx";
@@ -15,7 +15,9 @@ import AdminLayout from "@/pages/admin-layout.tsx";
 import DashboardPage from "@/pages/admin/dashboard-page.tsx";
 import ProductPage from "@/pages/admin/product-page.tsx";
 import ProductDetail from "@/pages/product/product-category";
-import { CartPage } from "@/pages/cart/cart-page";
+import ProductDetailPage from "@/pages/public/product-detail.tsx";
+import CartPage from "@/pages/private/cart-page.tsx";
+import CheckoutPage from "@/pages/private/check-out.tsx";
 
 
 export const routes = createBrowserRouter([
@@ -32,13 +34,17 @@ export const routes = createBrowserRouter([
                 element: <HomePage />,
               },
               {
-                path: "/category/Woman",
+                path: "/category/woman",
                 element: <ProductDetail />,
               },
               {
                 path: "/cartTest",
                 element: <CartPage />,
               },
+              {
+                path: "/product/:id",
+                element: <ProductDetailPage />,
+              }
             ],
           },
           {
@@ -52,6 +58,10 @@ export const routes = createBrowserRouter([
                 path: "/cart",
                 element: <CartPage />,
               },
+              {
+                path: "/checkout",
+                element: <CheckoutPage />
+              }
             ],
           },
         ],

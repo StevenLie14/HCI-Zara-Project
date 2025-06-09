@@ -15,10 +15,9 @@ import {type ChangeEvent, useEffect, useState} from "react";
 import {ProductService} from "@/services/product-service.ts";
 import {useMutation, type UseMutationResult} from "@tanstack/react-query";
 import {ToastService} from "@/utils/toast.ts";
-import {changeImageName} from "@/utils/utils.ts";
+import {changeImageName, loadImage} from "@/utils/utils.ts";
 import type {ProductResponse} from "@/models/dto/response/product-response.ts";
 import type {Nullable} from "@/models/types/utils";
-import {getProjectEnvVariables} from "@/utils/env.ts";
 import type {CategoryResponse} from "@/models/dto/response/category-response.ts";
 import {CategoryService} from "@/services/category-service.ts";
 
@@ -64,11 +63,11 @@ const ProductForm = ({open, onClose,getProducts,selectedProduct} : IProps) => {
         images: selectedProduct.productImages,
       });
       selectedProduct.productImages.forEach((image, index) => {
-        setImagePreviews(prev => ({...prev, [index]: `${getProjectEnvVariables().VITE_MINIO_URL}${image.productImage}` }));
+        setImagePreviews(prev => ({...prev, [index]: loadImage(image.productImage) }));
       });
 
       selectedProduct.productVariants.forEach((variant, index) => {
-        setVariantImagePreviews(prev => ({...prev, [index]: `${getProjectEnvVariables().VITE_MINIO_URL}${variant.variantImage}` }));
+        setVariantImagePreviews(prev => ({...prev, [index]: loadImage(variant.variantImage) }));
       });
       return
     }

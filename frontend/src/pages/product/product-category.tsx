@@ -1,6 +1,3 @@
-import Navbar from "@/components/navbar";
-import { Sidebar } from "lucide-react";
-import React from "react";
 import MainContentSection from "./main-content";
 import FooterSection from "@/components/footer";
 import SidebarSection from "./side-bar";

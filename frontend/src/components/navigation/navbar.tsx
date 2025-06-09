@@ -1,9 +1,9 @@
-import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import ProfileNav from "@/components/nav/profile-nav.tsx";
+import {MobileNav} from "@/components/navigation/mobile-nav.tsx";
+import ProfileNav from "@/components/navigation/profile-nav.tsx";
 
 const Navbar = () => {
 
