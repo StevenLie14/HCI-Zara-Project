@@ -1,5 +1,4 @@
 import FooterSection from "@/components/footer";
-import Navbar from "@/components/navbar.tsx";
 import { useEffect } from "react";
 import FeaturedProducts from "../public/featured-product";
 import ProductDetailSection from "./product-detail-page";
