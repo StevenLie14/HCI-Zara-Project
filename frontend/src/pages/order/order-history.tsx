@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import {useEffect, useState} from "react";
 import {
   ChevronDown,
   ChevronUp,
@@ -7,144 +7,28 @@ import {
   CheckCircle,
   MoreHorizontal,
 } from "lucide-react";
+import type {TransactionResponse} from "@/models/dto/response/transaction-response.ts";
+import {useMutation} from "@tanstack/react-query";
+import {ToastService} from "@/utils/toast.ts";
+import {TransactionService} from "@/services/transaction-service.ts";
 
-interface OrderItem {
-  id: string;
-  name: string;
-  size: string;
-  color: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-interface Order {
-  id: string;
-  date: string;
-  status: "delivered" | "shipped" | "processing" | "cancelled";
-  total: number;
-  items: OrderItem[];
-  shippingAddress: {
-    name: string;
-    address: string;
-    city: string;
-    country: string;
-  };
-  trackingNumber?: string;
-}
-
-const OrderHistory: React.FC = () => {
+const OrderHistory = () => {
   const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
 
-  const mockOrders: Order[] = [
-    {
-      id: "ORD-2024-001",
-      date: "2024-05-15",
-      status: "delivered",
-      total: 189.97,
-      trackingNumber: "ZR123456789",
-      items: [
-        {
-          id: "1",
-          name: "BASIC T-SHIRT",
-          size: "M",
-          color: "White",
-          price: 29.99,
-          quantity: 2,
-          image: "/api/placeholder/80/80",
-        },
-        {
-          id: "2",
-          name: "STRAIGHT FIT JEANS",
-          size: "32",
-          color: "Blue",
-          price: 89.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-        {
-          id: "3",
-          name: "KNIT SWEATER",
-          size: "L",
-          color: "Black",
-          price: 39.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-      ],
-      shippingAddress: {
-        name: "Jonathan Smith",
-        address: "123 Baker Street",
-        city: "London, Greater London, W1U 6QX",
-        country: "United Kingdom",
-      },
+  const [transactions, setTransactions] = useState<TransactionResponse[]>([]);
+  const transactionMutation = useMutation({
+    mutationFn: TransactionService.getMyTransactions,
+    onSuccess: (data) => {
+      setTransactions(data);
     },
-    {
-      id: "ORD-2024-002",
-      date: "2024-05-22",
-      status: "shipped",
-      total: 124.98,
-      trackingNumber: "ZR987654321",
-      items: [
-        {
-          id: "4",
-          name: "CROPPED BLAZER",
-          size: "S",
-          color: "Navy",
-          price: 79.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-        {
-          id: "5",
-          name: "MIDI SKIRT",
-          size: "M",
-          color: "Beige",
-          price: 44.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-      ],
-      shippingAddress: {
-        name: "Jonathan Smith",
-        address: "123 Baker Street",
-        city: "London, Greater London, W1U 6QX",
-        country: "United Kingdom",
-      },
+    onError: (error) => {
+      ToastService.error(error.message);
     },
-    {
-      id: "ORD-2024-003",
-      date: "2024-05-28",
-      status: "processing",
-      total: 67.98,
-      items: [
-        {
-          id: "6",
-          name: "BASIC POLO SHIRT",
-          size: "L",
-          color: "White",
-          price: 34.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-        {
-          id: "7",
-          name: "CHINO SHORTS",
-          size: "34",
-          color: "Khaki",
-          price: 32.99,
-          quantity: 1,
-          image: "/api/placeholder/80/80",
-        },
-      ],
-      shippingAddress: {
-        name: "Jonathan Smith",
-        address: "123 Baker Street",
-        city: "London, Greater London, W1U 6QX",
-        country: "United Kingdom",
-      },
-    },
-  ];
+  })
+
+  useEffect(() => {
+    transactionMutation.mutate()
+  }, []);
 
   const toggleOrderExpansion = (orderId: string) => {
     setExpandedOrders((prev) =>
@@ -156,11 +40,11 @@ const OrderHistory: React.FC = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "delivered":
+      case "DELIVERED":
         return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case "shipped":
+      case "SHIPPED":
         return <Truck className="w-4 h-4 text-blue-600" />;
-      case "processing":
+      case "PENDING":
         return <Package className="w-4 h-4 text-orange-600" />;
       default:
         return <MoreHorizontal className="w-4 h-4 text-gray-400" />;
@@ -169,13 +53,13 @@ const OrderHistory: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "delivered":
+      case "DELIVERED":
         return "text-green-600 bg-green-50";
-      case "shipped":
+      case "SHIPPED":
         return "text-blue-600 bg-blue-50";
-      case "processing":
+      case "PENDING":
         return "text-orange-600 bg-orange-50";
-      case "cancelled":
+      case "CANCELLED":
         return "text-red-600 bg-red-50";
       default:
         return "text-gray-600 bg-gray-50";
@@ -192,7 +76,6 @@ const OrderHistory: React.FC = () => {
 
   return (
     <div className="min-h-screen ">
-      {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className=" rounded-lg shadow-sm">
           <div className="p-6 border-b ">
@@ -203,9 +86,8 @@ const OrderHistory: React.FC = () => {
           </div>
 
           <div className="divide-y divide-gray-200">
-            {mockOrders.map((order) => (
+            {transactions.map((order) => (
               <div key={order.id} className="p-6">
-                {/* Order Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
                     <div>
@@ -213,7 +95,7 @@ const OrderHistory: React.FC = () => {
                         Order #{order.id}
                       </p>
                       <p className="text-sm ">
-                        {formatDate(order.date)}
+                        {formatDate(order.createdAt)}
                       </p>
                     </div>
                     <div
@@ -228,7 +110,7 @@ const OrderHistory: React.FC = () => {
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
                       <p className="font-semibold ">
-                        ${order.total.toFixed(2)}
+                        ${order.items.reduce((total, item) => total + item.variant.price * item.quantity, 0).toFixed(2)}
                       </p>
                       <p className="text-sm ">
                         {order.items.length} items
@@ -247,19 +129,6 @@ const OrderHistory: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Tracking Info */}
-                {order.trackingNumber && (
-                  <div className="mb-4 p-3  rounded-lg">
-                    <p className="text-sm ">
-                      Tracking Number:{" "}
-                      <span className="font-mono font-medium">
-                        {order.trackingNumber}
-                      </span>
-                    </p>
-                  </div>
-                )}
-
-                {/* Order Details (Expandable) */}
                 {expandedOrders.includes(order.id) && (
                   <div className="mt-4 space-y-4">
                     {/* Items */}
@@ -278,16 +147,16 @@ const OrderHistory: React.FC = () => {
                             </div>
                             <div className="flex-1">
                               <h5 className="font-medium ">
-                                {item.name}
+                                {item.product?.name}
                               </h5>
                               <p className="text-sm ">
-                                Size: {item.size} • Color: {item.color} • Qty:{" "}
+                                Size: {item.variant.size} • Color: {item.variant.color} • Qty:{" "}
                                 {item.quantity}
                               </p>
                             </div>
                             <div className="text-right">
                               <p className="font-medium ">
-                                ${item.price.toFixed(2)}
+                                ${item.variant.price.toFixed(2)}
                               </p>
                               {item.quantity > 1 && (
                                 <p className="text-sm ">each</p>
@@ -298,63 +167,44 @@ const OrderHistory: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Shipping Address */}
                     <div>
                       <h4 className="font-medium mb-3">
                         Shipping Address
                       </h4>
                       <div className="p-3  rounded-lg">
                         <p className="font-medium ">
-                          {order.shippingAddress.name}
+                          {order.address.name}
                         </p>
                         <p className="text-sm ">
-                          {order.shippingAddress.address}
+                          {order.address.address}
                         </p>
                         <p className="text-sm ">
-                          {order.shippingAddress.city}
+                          {order.address.city}
                         </p>
                         <p className="text-sm ">
-                          {order.shippingAddress.country}
+                          {order.address.country}
                         </p>
                       </div>
                     </div>
 
-                    {/* Order Summary */}
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center">
                         <p className="text-sm ">Subtotal</p>
                         <p className="text-sm ">
-                          ${(order.total - 5).toFixed(2)}
+                          ${order.items.reduce((total, item) => total + item.variant.price * item.quantity, 0).toFixed(2)}
                         </p>
                       </div>
                       <div className="flex justify-between items-center mt-1">
                         <p className="text-sm ">Shipping</p>
-                        <p className="text-sm ">$5.00</p>
+                        <p className="text-sm ">Free</p>
                       </div>
                       <div className="flex justify-between items-center mt-2 pt-2 border-t">
                         <p className="font-semibold ">Total</p>
                         <p className="font-semibold ">
-                          ${order.total.toFixed(2)}
+                          ${order.items.reduce((total, item) => total + item.variant.price * item.quantity, 0).toFixed(2)}
                         </p>
                       </div>
                     </div>
-
-                    {/* Action Buttons */}
-                    {/* <div className="flex space-x-3 pt-4">
-                      {order.status === "delivered" && (
-                        <button className="px-4 py-2 bg-black text-white text-sm font-medium rounded hover:bg-gray-800 transition-colors">
-                          Reorder
-                        </button>
-                      )}
-                      {order.status === "shipped" && (
-                        <button className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
-                          Track Package
-                        </button>
-                      )}
-                      <button className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
-                        View Invoice
-                      </button>
-                    </div> */}
                   </div>
                 )}
               </div>

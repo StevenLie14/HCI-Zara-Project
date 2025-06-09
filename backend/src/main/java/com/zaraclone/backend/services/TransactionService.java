@@ -51,7 +51,7 @@ public class TransactionService {
                 shippingAddressRepository.findById(createTransactionRequest.getShippingAddressId())
                         .orElseThrow(() -> new RuntimeException("Shipping address not found"))
         );
-        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setStatus(TransactionStatus.PAID);
         transaction.setCreatedAt(Timestamp.from(Instant.now()));
         transaction.setUpdatedAt(Timestamp.from(Instant.now()));
 
@@ -89,7 +89,8 @@ public class TransactionService {
         if (!transaction.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Transaction does not belong to the current user");
         }
-        transactionMapper.update(request, transaction);
+        transaction.setStatus(request.getStatus());
+        transaction.setUpdatedAt(Timestamp.from(Instant.now()));
         return transactionMapper.toDto(transactionRepository.save(transaction));
     }
 

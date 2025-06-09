@@ -4,26 +4,26 @@ export function DashboardMetrics() {
   const metrics = [
     {
       title: "Total Sales",
-      value: "XXXX",
-      change: "+XX% since last month",
+      value: "6472",
+      change: "+43% since last month",
       positive: true,
     },
     {
       title: "Orders",
-      value: "XXXX",
-      change: "+XX% since last month",
+      value: "1234",
+      change: "+37% since last month",
       positive: true,
     },
     {
       title: "Revenue",
-      value: "XXXX",
-      change: "+XX% since last month",
+      value: "987654",
+      change: "+69% since last month",
       positive: true,
     },
     {
       title: "Customers",
-      value: "XXXX",
-      change: "+XX% since last month",
+      value: "1837",
+      change: "+29% since last month",
       positive: true,
     },
   ]

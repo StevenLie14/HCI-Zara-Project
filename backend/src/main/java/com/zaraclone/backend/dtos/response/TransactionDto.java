@@ -12,7 +12,9 @@ import java.util.List;
 @Getter
 public class TransactionDto {
     private String id;
-    private TransactionStatus category;
+    private TransactionStatus status;
+    private ShippingAddressDto address;
+    private String paymentMethod;
     private UserDto user;
     private List<TransactionItemDto> items;
 

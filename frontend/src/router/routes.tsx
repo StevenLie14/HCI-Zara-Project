@@ -18,7 +18,7 @@ import ProductDetail from "@/pages/product/product-category";
 import ProductDetailPage from "@/pages/public/product-detail.tsx";
 import CartPage from "@/pages/private/cart-page.tsx";
 import CheckoutPage from "@/pages/private/check-out.tsx";
-import AdminOrderManagement from "@/pages/admin/edit-status-transaction";
+import {OrderHistoryPage} from "@/pages/order/order-history-page.tsx";
 
 
 export const routes = createBrowserRouter([
@@ -63,6 +63,10 @@ export const routes = createBrowserRouter([
                 path: "/checkout",
                 element: <CheckoutPage />,
               },
+              {
+                path: "/orders",
+                element: <OrderHistoryPage />
+              }
             ],
           },
         ],

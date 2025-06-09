@@ -17,10 +17,7 @@ public interface TransactionMapper {
             @Mapping(target = "user", source = "user"),
     })
     Transaction toEntity(CreateTransactionRequest request, User user);
-    @AfterMapping
-    default void setDefaultState(@MappingTarget Transaction transaction) {
-        transaction.setStatus(TransactionStatus.PENDING);
-    }
+
 
     void update(UpdateTransactionRequest request, @MappingTarget Transaction transaction);
 }
