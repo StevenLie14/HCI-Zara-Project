@@ -14,6 +14,8 @@ import {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import type {ProductResponse} from "@/models/dto/response/product-response.ts";
+import {mockProducts} from "@/models/constant/products.ts";
 
 interface AuthContextProps {
   me: UserResponse | null;
@@ -22,6 +24,8 @@ interface AuthContextProps {
   logout: UseMutationResult<AuthResponse, Error, void>;
   getMe: UseMutationResult<UserResponse, Error, void>;
   register: UseMutationResult<AuthResponse, Error, RegisterRequest>;
+  products : ProductResponse[];
+  searchProduct : (query: string) => void;
 }
 
 interface AuthProps {
@@ -37,6 +41,13 @@ export function AuthProvider({ children }: AuthProps) {
   const [isAuthenticated, setIsAuthenticated] =
     useState<Nullable<Boolean>>(null);
   const navigate = useNavigate();
+  const [products, setProducts] = useState<ProductResponse[]>(mockProducts);
+  const searchProduct = (query: string) => {
+    setProducts(mockProducts.filter((product) => {
+      return product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase())
+    }))
+  }
 
   const login = useMutation({
     mutationFn: AuthService.login,
@@ -99,6 +110,8 @@ export function AuthProvider({ children }: AuthProps) {
         register: register,
         getMe: getCurrentUser,
         isAuthenticated: isAuthenticated,
+        products: products,
+        searchProduct: searchProduct,
       }}
     >
       {children}

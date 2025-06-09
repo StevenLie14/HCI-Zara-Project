@@ -7,7 +7,7 @@ import {Button} from "@/components/ui/button.tsx";
 import FeaturedProducts from "@/pages/public/featured-product.tsx";
 
 export default function ProductDetailPage() {
-  // const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: string }>()
   const [selectedColor, setSelectedColor] = useState("")
   const [selectedSize, setSelectedSize] = useState("")
   const [quantity, setQuantity] = useState(1)
@@ -37,19 +37,8 @@ export default function ProductDetailPage() {
   }
 
   const productImages = [
-    product.image,
-    product.image,
-    product.image,
-    product.image,
-    product.image,
-    product.image,
-    product.image,
     '/picture/man-card.png',
-    product.image,
-    product.image,
-    product.image,
-    product.image,
-    product.image,
+    '/picture/women-card.png',
     product.image,
   ]
 

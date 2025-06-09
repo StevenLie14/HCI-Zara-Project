@@ -16,6 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {Role} from "@/models/enum/role-enum.ts";
+import {mockProducts} from "@/models/constant/products.ts";
 
 const ProfileNav = () => {
   const { isAuthenticated, me, logout } = useAuth();
@@ -24,25 +25,8 @@ const ProfileNav = () => {
     logout.mutate();
   };
 
-  const cartItems = [
-    {
-      id: 1,
-      name: "Product 1",
-      image: "/picture/kid-card.png",
-      price: 100000,
-      qty: 2,
-      seller: "Seller A",
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      image: "/picture/women-card.png",
-      price: 150000,
-      qty: 1,
-      seller: "Seller B",
-    },
-    // Add more items as needed
-  ]
+  const cartItems = mockProducts.slice(0, 2);
+
 
   return (
     <>
@@ -58,7 +42,7 @@ const ProfileNav = () => {
                   <ShoppingBag className="h-5 w-5"/>
                   <span
                     className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    0
+                    {cartItems.length}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -72,21 +56,20 @@ const ProfileNav = () => {
                   </Link>
                 </div>
 
-                {/* Cart items */}
                 <div className="max-h-80 overflow-y-auto divide-y">
                   {cartItems.map((item, index) => (
                     <div key={index} className="flex gap-3 p-4 items-start">
                       <img
-                        src={item.image}
+                        src={item.productVariants[0].variantImage}
                         alt={item.name}
                         className="w-14 h-14 object-cover rounded"
                       />
                       <div className="flex-1">
                         <p className="text-sm font-medium line-clamp-1">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.seller}</p>
+                        {/*<p className="text-xs text-muted-foreground">{item.}</p>*/}
                       </div>
                       <div className="text-sm font-semibold whitespace-nowrap">
-                        {item.qty} × Rp{item.price.toLocaleString("id-ID")}
+                        {item.productVariants[0].stock} × ${item.productVariants[0].price}
                       </div>
                     </div>
                   ))}

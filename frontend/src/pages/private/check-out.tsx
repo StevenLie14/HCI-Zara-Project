@@ -20,6 +20,7 @@ import {Separator} from "@/components/ui/separator.tsx";
 import useAddress from "@/hooks/use-address.ts";
 import AddressDialog from "@/components/profile/address-dialog.tsx";
 import {paymentMethods} from "@/models/constant/payment-method.ts";
+import {mockProducts} from "@/models/constant/products.ts";
 
 export const checkoutSchema = z.object({
   shippingAddressId: z.string().min(1, { message: "Please select a shipping address" }),
@@ -48,23 +49,13 @@ export default function CheckoutPage() {
   const navigate = useNavigate()
 
   const shipping = 0 // Free shipping
-  const taxRate = 0.1 // 10% tax
-  const subtotal = 0
+  const taxRate = 0 // 10% tax
+
+
+  const cartItems = mockProducts.slice(0,2)
+  const subtotal = cartItems.reduce((total, item) => total + item.productVariants[0].price * item.productVariants[0].stock, 0)
   const tax = subtotal * taxRate
   const total = subtotal + shipping + tax
-
-  const cartItems = [
-    {
-      id: 1,
-      name: "Stylish T-Shirt",
-      image: "/picture/kid-card.png",
-      price: 29.99,
-      quantity: 2,
-      color: "#953b3b",
-      size: "M",
-
-    }
-  ]
 
   // Main checkout form
   const checkoutForm = useForm<CheckoutFormValues>({
@@ -124,10 +115,10 @@ export default function CheckoutPage() {
                 <h2 className="mb-4 text-lg font-medium">Your Items</h2>
                 <div className="space-y-4">
                   {cartItems.map((item) => (
-                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4">
+                    <div key={`${item.id}-${item.productVariants[0].color}-${item.productVariants[0].size}`} className="flex gap-4">
                       <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
                         <img
-                          src={item.image || "/placeholder.svg"}
+                          src={item.productVariants[0].variantImage || "/placeholder.svg"}
                           alt={item.name}
                           className="h-full w-full object-cover"
                         />
@@ -136,16 +127,16 @@ export default function CheckoutPage() {
                         <div>
                           <h3 className="font-medium">{item.name}</h3>
                           <div className="flex gap-2 text-sm text-muted-foreground">
-                            {item.color && (
+                            {item.productVariants[0].color && (
                               <div>
-                                Color: {item.color}
+                                Color: {item.productVariants[0].color}
                               </div>
                             )}
-                            {item.size && <div>Size: {item.size}</div>}
+                            {item.productVariants[0].size && <div>Size: {item.productVariants[0].size}</div>}
                           </div>
-                          <span className={"text-sm text-muted-foreground"}>Qty: {item.quantity}</span>
+                          <span className={"text-sm text-muted-foreground"}>Qty: {item.productVariants[0].stock}</span>
                         </div>
-                        <div className="font-medium">${(item.price * item.quantity).toFixed(2)}</div>
+                        <div className="font-medium">${(item.productVariants[0].price * item.productVariants[0].stock).toFixed(2)}</div>
                       </div>
                     </div>
                   ))}
@@ -247,10 +238,10 @@ export default function CheckoutPage() {
                 <span>Shipping</span>
                 <span>{shipping === 0 ? "Free" : `$${shipping}`}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
+              {/*<div className="flex justify-between">*/}
+              {/*  <span>Tax</span>*/}
+              {/*  <span>${tax.toFixed(2)}</span>*/}
+              {/*</div>*/}
               <Separator className="my-4"/>
               <div className="flex justify-between text-lg font-medium">
                 <span>Total</span>
