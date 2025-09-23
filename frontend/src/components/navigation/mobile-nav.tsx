@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth-context.tsx";
-import { Heart, LogOut, Menu, ShoppingBag, User } from "lucide-react";
+import { LogOut, Menu, ShoppingBag, User } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -140,15 +140,6 @@ export function MobileNav() {
                   >
                     <ShoppingBag className="h-5 w-5" />
                     <span>My Orders</span>
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    to="/wishlist"
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-accent rounded-md transition-colors"
-                  >
-                    <Heart className="h-5 w-5" />
-                    <span>Wishlist</span>
                   </Link>
                 </SheetClose>
                 <button

@@ -38,7 +38,6 @@ export function CartProvider({ children }: CartProps) {
       setCarts(resp);
     },
     onError: () => {
-      ToastService.error("Failed to fetch products");
     },
   });
 

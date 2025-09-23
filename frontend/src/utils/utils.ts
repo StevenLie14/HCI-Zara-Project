@@ -16,6 +16,6 @@ export const changeImageName = (file: File): File => {
 };
 
 export const loadImage = (imagePath : string): string => {
-  if (imagePath.includes('/picture'))  return imagePath
+  if (imagePath?.includes('/picture'))  return imagePath
   return getProjectEnvVariables().VITE_MINIO_URL + imagePath;
 }

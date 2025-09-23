@@ -49,7 +49,7 @@ const ProfileNav = () => {
               <DropdownMenuContent className="w-80 shadow-lg -translate-y-2" align="center" forceMount>
                 <div className="flex items-center justify-between px-4 py-2 border-b">
                   <p className="font-semibold text-sm">
-                    Cart ({carts.length})
+                    Cart ({carts?.length || 0})
                   </p>
                   <Link to="/cart" className="text-sm hover:underline">
                     See More...
@@ -58,7 +58,7 @@ const ProfileNav = () => {
 
                 <div className="max-h-80 overflow-y-auto divide-y">
                   {
-                    carts.length <= 0 && (
+                    carts && carts.length <= 0 && (
                       <div className="p-4 text-center text-sm text-muted-foreground">
                         Your cart is empty.
                       </div>
@@ -92,7 +92,7 @@ const ProfileNav = () => {
                 <Avatar className="h-8 w-8">
                   <AvatarImage
                     src={
-                      me?.profilePicture ||
+                      me? loadImage(me.profilePicture) :
                       "/placeholder.svg?height=32&width=32"
                     }
                     alt={me?.name || "User"}
